@@ -6,6 +6,8 @@ const App = () => {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [activeCategory, setActiveCategory] = useState('all');
+  const [apiStatus, setApiStatus] = useState({});
+  const [showApiPanel, setShowApiPanel] = useState(false);
   const messagesEndRef = useRef(null);
 
   const APIs = {
@@ -27,21 +29,25 @@ const App = () => {
 
   const quickQuestions = [
     { text: 'Status das sirenes', category: 'sirens' },
-    { text: 'Sirenes offline', category: 'sirens' },
-    { text: 'Sirenes em alerta', category: 'sirens' },
+    { text: 'Tem sirene quebrada?', category: 'sirens' },
+    { text: 'Alguma sirene tocando?', category: 'sirens' },
     { text: 'Sirenes na Rocinha', category: 'sirens' },
-    { text: 'Condições atuais do tempo', category: 'weather' },
-    { text: 'Como está o tempo AGORA?', category: 'weather' },
-    { text: 'Previsão para esta noite', category: 'weather' },
-    { text: 'Temperatura por zona', category: 'weather' },
-    { text: 'Tábua de marés hoje', category: 'weather' },
-    { text: 'Onde está chovendo agora?', category: 'rain' },
-    { text: 'Estação com mais chuva', category: 'rain' },
-    { text: 'Acumulado últimas 24h', category: 'rain' },
-    { text: 'Vias mais engarrafadas', category: 'traffic' },
-    { text: 'Vias interditadas', category: 'traffic' },
-    { text: 'Acidentes reportados', category: 'incidents' },
-    { text: 'Panorama Completo', category: 'all' },
+    { text: 'Quantas sirenes offline?', category: 'sirens' },
+    { text: 'Como está o tempo agora?', category: 'weather' },
+    { text: 'Vai fazer calor hoje?', category: 'weather' },
+    { text: 'Como vai estar a noite?', category: 'weather' },
+    { text: 'Temperatura nos bairros', category: 'weather' },
+    { text: 'Quando vai chover?', category: 'weather' },
+    { text: 'Tá chovendo em algum lugar?', category: 'rain' },
+    { text: 'Onde choveu mais?', category: 'rain' },
+    { text: 'Quanto choveu hoje?', category: 'rain' },
+    { text: 'Tem engarrafamento?', category: 'traffic' },
+    { text: 'Qual rua tá pior?', category: 'traffic' },
+    { text: 'Alguma via fechada?', category: 'traffic' },
+    { text: 'Tem acidente agora?', category: 'incidents' },
+    { text: 'Onde tem alagamento?', category: 'incidents' },
+    { text: 'Me dá um resumo da cidade', category: 'all' },
+    { text: 'Como está tudo?', category: 'all' },
   ];
 
   useEffect(() => {
@@ -50,7 +56,56 @@ const App = () => {
       content: '🌤️ Olá! Sou o **JARVIS Municipal do Rio**.\n\nPosso ajudar com:\n\n🚨 Sirenes de Alerta\n☀️ Previsão do Tempo\n💧 Pluviometria\n🚗 Trânsito\n⚠️ Ocorrências\n\nComo posso ajudar?',
       timestamp: new Date()
     }]);
+
+    // Verificar APIs na inicialização
+    checkAllAPIs();
+
+    // Verificar APIs a cada 2 minutos
+    const interval = setInterval(() => {
+      checkAllAPIs();
+    }, 120000); // 120000ms = 2 minutos
+
+    return () => clearInterval(interval);
   }, []);
+
+  const checkAllAPIs = async () => {
+    const status = {};
+    
+    for (const [name, url] of Object.entries(APIs)) {
+      try {
+        const startTime = Date.now();
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout
+
+        const response = await fetch(url, { 
+          signal: controller.signal,
+          method: 'GET'
+        });
+        
+        clearTimeout(timeoutId);
+        const endTime = Date.now();
+        const responseTime = endTime - startTime;
+
+        status[name] = {
+          online: response.ok,
+          status: response.status,
+          responseTime,
+          lastCheck: new Date(),
+          error: null
+        };
+      } catch (error) {
+        status[name] = {
+          online: false,
+          status: 0,
+          responseTime: 0,
+          lastCheck: new Date(),
+          error: error.message
+        };
+      }
+    }
+    
+    setApiStatus(status);
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -68,60 +123,148 @@ const App = () => {
   };
 
   const detectIntent = (question) => {
-    const q = question.toLowerCase();
+    const q = question.toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, ''); // Remove acentos
     
-    if (q.includes('sirene') || q.includes('alerta') || q.includes('alarme')) {
-      if (q.includes('offline') || q.includes('fora') || q.includes('inativa')) return { type: 'sirens_offline', category: 'sirens' };
-      if (q.includes('alerta') || q.includes('acionada') || q.includes('tocando')) return { type: 'sirens_alert', category: 'sirens' };
-      if (q.includes('status') || q.includes('geral')) return { type: 'sirens_status', category: 'sirens' };
+    // SIRENES - Reconhecimento mais amplo
+    const sireneKeywords = ['sirene', 'sirenes', 'alerta', 'alarme', 'sistema de alerta'];
+    const hasSirene = sireneKeywords.some(kw => q.includes(kw));
+    
+    if (hasSirene) {
+      // Sirenes offline
+      if (q.match(/\b(offline|off-line|fora|desligada|inativa|parada|quebrada|nao funciona|sem funcionar)\b/)) {
+        return { type: 'sirens_offline', category: 'sirens' };
+      }
       
-      const localMatch = q.match(/(?:na|no|em|da|do)\s+([a-záàâãéèêíïóôõöúçñ\s]+)/i);
-      if (localMatch) return { type: 'sirens_location', category: 'sirens', location: localMatch[1].trim() };
+      // Sirenes em alerta/acionadas
+      if (q.match(/\b(acionada|tocando|disparada|ligada|ativa|em alerta|alertando|soando)\b/)) {
+        return { type: 'sirens_alert', category: 'sirens' };
+      }
       
+      // Busca por localidade (mais flexível)
+      const localMatch = q.match(/\b(?:na|no|em|da|do|de|perto|proximo|regiao)\s+([a-z\s]{3,})/i);
+      if (localMatch) {
+        const location = localMatch[1].trim();
+        if (location.length > 2) {
+          return { type: 'sirens_location', category: 'sirens', location };
+        }
+      }
+      
+      // Perguntas sobre quantidade/números
+      if (q.match(/\b(quantas|quantos|numero|quantidade|total)\b/)) {
+        return { type: 'sirens_status', category: 'sirens' };
+      }
+      
+      // Status geral (padrão para sirenes)
       return { type: 'sirens_status', category: 'sirens' };
     }
     
-    if (q.includes('agora') || q.includes('atual') || q.includes('corrente') || q.includes('condições')) {
-      return { type: 'weather_current', category: 'weather' };
-    }
-    if (q.includes('noite') && (q.includes('esta') || q.includes('hoje'))) {
-      return { type: 'weather_tonight', category: 'weather' };
-    }
-    if (q.includes('tarde') && (q.includes('esta') || q.includes('hoje'))) {
-      return { type: 'weather_afternoon', category: 'weather' };
-    }
-    if (q.includes('maré') || q.includes('tábua')) {
-      return { type: 'weather_tide', category: 'weather' };
-    }
-    if (q.includes('zona') || (q.includes('bairro') && q.includes('temperatura'))) {
-      return { type: 'weather_zones', category: 'weather' };
-    }
-    if (q.includes('tempo') || q.includes('previsão') || q.includes('amanhã') || q.includes('semana')) {
+    // CLIMA/TEMPO - Reconhecimento mais amplo
+    const climaKeywords = ['tempo', 'clima', 'temperatura', 'calor', 'frio', 'sol', 'nublado', 'ceu'];
+    const hasClima = climaKeywords.some(kw => q.includes(kw));
+    
+    if (hasClima || q.match(/\b(vai chover|ta chovendo|esta chovendo)\b/)) {
+      // Condições atuais
+      if (q.match(/\b(agora|atual|corrente|momento|hoje|neste instante|ta|esta|como esta)\b/) && 
+          !q.includes('noite') && !q.includes('tarde')) {
+        return { type: 'weather_current', category: 'weather' };
+      }
+      
+      // Noite
+      if (q.match(/\b(noite|esta noite|hoje a noite|hoje de noite)\b/)) {
+        return { type: 'weather_tonight', category: 'weather' };
+      }
+      
+      // Tarde
+      if (q.match(/\b(tarde|esta tarde|hoje a tarde|hoje de tarde)\b/)) {
+        return { type: 'weather_afternoon', category: 'weather' };
+      }
+      
+      // Marés
+      if (q.match(/\b(mare|mares|tabua|cheia|vazante|baixa-mar|preamar)\b/)) {
+        return { type: 'weather_tide', category: 'weather' };
+      }
+      
+      // Temperatura por zona
+      if (q.match(/\b(zona|bairro|regiao|local)\b/) && q.includes('temperatura')) {
+        return { type: 'weather_zones', category: 'weather' };
+      }
+      
+      // Previsão geral
       return { type: 'weather_general', category: 'weather' };
     }
     
-    if (q.includes('chovendo') || q.includes('pluviom') || q.includes('estação') || q.includes('acumulado')) {
-      if (q.includes('onde') || q.includes('chovendo')) return { type: 'rain_now', category: 'rain' };
-      if (q.includes('mais') || q.includes('maior')) return { type: 'rain_top', category: 'rain' };
-      if (q.includes('24')) return { type: 'rain_24h', category: 'rain' };
+    // CHUVA - Reconhecimento mais amplo
+    const chuvaKeywords = ['chuva', 'chuvendo', 'chovendo', 'pluviom', 'precipitacao', 'molhado', 'agua'];
+    const hasChuva = chuvaKeywords.some(kw => q.includes(kw));
+    
+    if (hasChuva) {
+      // Chovendo agora
+      if (q.match(/\b(onde|aonde|local|locais|esta chovendo|ta chovendo|chovendo agora)\b/)) {
+        return { type: 'rain_now', category: 'rain' };
+      }
+      
+      // Maior/mais chuva
+      if (q.match(/\b(mais|maior|top|ranking|recorde)\b/)) {
+        return { type: 'rain_top', category: 'rain' };
+      }
+      
+      // 24 horas
+      if (q.match(/\b(24|vinte e quatro|dia|acumulado|total)\b/)) {
+        return { type: 'rain_24h', category: 'rain' };
+      }
+      
       return { type: 'rain_general', category: 'rain' };
     }
     
-    if (q.includes('engarraf') || q.includes('trânsito') || q.includes('via')) {
-      if (q.includes('interdita') || q.includes('fechada')) return { type: 'road_closed', category: 'traffic' };
+    // TRÂNSITO - Reconhecimento mais amplo
+    const transitoKeywords = ['transito', 'trafego', 'engarrafamento', 'congestionamento', 'lento', 'parado', 'via', 'rua', 'avenida'];
+    const hasTransito = transitoKeywords.some(kw => q.includes(kw));
+    
+    if (hasTransito) {
+      // Vias fechadas/interditadas
+      if (q.match(/\b(fechada|fechado|interditada|interditado|bloqueada|bloqueado|impedida|impedido)\b/)) {
+        return { type: 'road_closed', category: 'traffic' };
+      }
+      
+      // Congestionamentos
+      if (q.match(/\b(engarrafamento|congestionamento|engarrafado|congestionado|lento|parado|transito)\b/)) {
+        return { type: 'jams', category: 'traffic' };
+      }
+      
       return { type: 'jams', category: 'traffic' };
     }
     
-    if (q.includes('acidente') || q.includes('alagamento') || q.includes('ocorrência')) {
-      if (q.includes('alagamento')) return { type: 'floods_waze', category: 'incidents' };
-      if (q.includes('acidente')) return { type: 'accidents', category: 'incidents' };
+    // OCORRÊNCIAS/ACIDENTES - Reconhecimento mais amplo
+    const ocorrenciaKeywords = ['acidente', 'batida', 'colisao', 'alagamento', 'enchente', 'ocorrencia', 'incidente', 'problema'];
+    const hasOcorrencia = ocorrenciaKeywords.some(kw => q.includes(kw));
+    
+    if (hasOcorrencia) {
+      // Alagamentos
+      if (q.match(/\b(alagamento|alagado|enchente|inundacao|agua na rua)\b/)) {
+        return { type: 'floods_waze', category: 'incidents' };
+      }
+      
+      // Acidentes
+      if (q.match(/\b(acidente|batida|colisao|capotamento|atropelamento)\b/)) {
+        return { type: 'accidents', category: 'incidents' };
+      }
+      
       return { type: 'serious', category: 'incidents' };
     }
     
-    if (q.includes('panorama') || q.includes('resumo') || q.includes('geral')) {
+    // PANORAMA/RESUMO - Reconhecimento mais amplo
+    if (q.match(/\b(panorama|resumo|geral|tudo|completo|situacao|cenario|visao geral|como esta a cidade|status da cidade)\b/)) {
       return { type: 'overview', category: 'all' };
     }
     
+    // PERGUNTAS GENÉRICAS que devem retornar panorama
+    if (q.match(/\b(como|qual|que|me|mostre|mostra|diga|fale|conta|info|informacao)\b/) && q.length < 50) {
+      return { type: 'overview', category: 'all' };
+    }
+    
+    // Padrão: retorna panorama
     return { type: 'overview', category: 'all' };
   };
 
@@ -430,14 +573,107 @@ const App = () => {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-sm text-green-400">5 APIs</span>
+              <div className={`w-2 h-2 rounded-full animate-pulse ${
+                Object.values(apiStatus).length > 0 && Object.values(apiStatus).every(s => s.online)
+                  ? 'bg-green-500'
+                  : Object.values(apiStatus).length > 0
+                  ? 'bg-yellow-500'
+                  : 'bg-gray-500'
+              }`}></div>
+              <span className="text-sm text-green-400">
+                {Object.values(apiStatus).length > 0 
+                  ? `${Object.values(apiStatus).filter(s => s.online).length}/5 APIs`
+                  : '5 APIs'}
+              </span>
             </div>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* API Status Panel */}
+        <div className="mb-6">
+          <button
+            onClick={() => setShowApiPanel(!showApiPanel)}
+            className="flex items-center gap-2 px-4 py-2 bg-slate-800/50 hover:bg-slate-700/50 border border-cyan-500/20 rounded-xl text-sm text-slate-300 transition-all"
+          >
+            <Activity className="w-4 h-4" />
+            {showApiPanel ? 'Ocultar' : 'Mostrar'} Status das APIs
+            {Object.keys(apiStatus).length > 0 && (
+              <span className={`ml-2 w-2 h-2 rounded-full ${
+                Object.values(apiStatus).every(s => s.online) ? 'bg-green-500' : 'bg-red-500'
+              } animate-pulse`}></span>
+            )}
+          </button>
+
+          {showApiPanel && (
+            <div className="mt-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+              {Object.entries(APIs).map(([name, url]) => {
+                const status = apiStatus[name];
+                const isOnline = status?.online;
+                const displayName = {
+                  sirenes: '🚨 Sirenes',
+                  waze: '🚗 Waze',
+                  pluviometria: '💧 Pluviometria',
+                  previsao: '🌤️ Previsão',
+                  previsaoCorrente: '☀️ Tempo Atual'
+                }[name] || name;
+
+                return (
+                  <div
+                    key={name}
+                    className={`p-4 rounded-xl border ${
+                      isOnline
+                        ? 'bg-green-900/20 border-green-500/30'
+                        : 'bg-red-900/20 border-red-500/30'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-semibold text-white">
+                        {displayName}
+                      </span>
+                      <div className={`w-3 h-3 rounded-full ${
+                        isOnline ? 'bg-green-500' : 'bg-red-500'
+                      } animate-pulse`}></div>
+                    </div>
+                    
+                    {status ? (
+                      <>
+                        <div className="text-xs text-slate-400 space-y-1">
+                          <div>Status: <span className={isOnline ? 'text-green-400' : 'text-red-400'}>
+                            {isOnline ? 'Online' : 'Offline'}
+                          </span></div>
+                          {isOnline && (
+                            <div>Tempo: <span className="text-cyan-400">{status.responseTime}ms</span></div>
+                          )}
+                          {status.error && (
+                            <div className="text-red-400 text-xs mt-1">
+                              {status.error.substring(0, 30)}...
+                            </div>
+                          )}
+                          <div className="text-xs opacity-50">
+                            {status.lastCheck.toLocaleTimeString('pt-BR')}
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-xs text-slate-500">Verificando...</div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {showApiPanel && (
+            <button
+              onClick={checkAllAPIs}
+              className="mt-3 px-4 py-2 bg-cyan-600 hover:bg-cyan-700 rounded-xl text-sm text-white transition-all"
+            >
+              🔄 Verificar Agora
+            </button>
+          )}
+        </div>
         <div className="flex gap-3 mb-6 overflow-x-auto pb-2">
           {categories.map((cat) => {
             const Icon = cat.icon;
