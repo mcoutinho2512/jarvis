@@ -6,6 +6,12 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 3010,
-    strictPort: false
+    strictPort: true,  // ← FORÇA A PORTA 3010
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3011',
+        changeOrigin: true
+      }
+    }
   }
 })

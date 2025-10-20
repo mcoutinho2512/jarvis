@@ -24,7 +24,7 @@ const Dashboard = () => {
       setLoading(true);
       setError(null);
       
-      const response = await fetch('http://localhost:3011/api/sirenes');
+      const response = await fetch('/api/sirenes');
       
       if (!response.ok) {
         throw new Error(`Erro na API: ${response.status}`);
