@@ -1,0 +1,532 @@
+📋 Carregando hierarquias do CSV...
+✅ 410 vias carregadas
+   Estrutural: 33
+   Arterial primária: 150
+   Arterial secundária: 227
+
+🔍 Primeiras 10 vias carregadas:
+   - Ponte Presidente Costa e Silva e Rodovia Governador Mário Covas (BR-101) (Estrutural)
+   - Avenida das Américas e Avenida Governador Carlos Lacerda (Estrutural)
+   - Avenida Ministro Ivan Lins (pista central) (Estrutural)
+   - Autoestrada Engenheiro Fernando MacDowell (Estrutural)
+   - Túnel André Rebouças (Estrutural)
+   - Rodovia Presidente Dutra (BR-116) (Estrutural)
+   - Túnel Prefeito Marcello Alencar e Avenida Francisco Bicalho (Estrutural)
+   - Túnel Prefeito Marcello Alencar (Estrutural)
+   - Via Expressa Presidente João Goulart (Linha Vermelha) (Estrutural)
+   - Avenida Rodrigues Alves e Ponte Presidente Costa e Silva (Estrutural)
+🚀 Servidor rodando em http://localhost:3011
+📋 Hierarquias carregadas e prontas para filtrar alertas
+
+🧪 Testando endpoint filtrado internamente...
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 239 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 239 → 67
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+✅ Endpoint responde: {
+  total_original: 239,
+  total_filtrado: 67,
+  hierarquias: [ 'Estrutural', 'Arterial primária', 'Arterial secundária' ]
+}
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 239 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 239 → 67
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Response status: 200
+📊 Dados recebidos: 236 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 236 → 67
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📊 Dados recebidos: 236 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 236 → 67
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 236 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 236 → 67
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 236 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 236 → 67
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 234 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 234 → 68
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 234 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 234 → 68
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 234 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 234 → 68
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 234 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 234 → 68
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 234 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 234 → 68
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 234 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 234 → 68
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 234 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 234 → 68
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 234 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 234 → 68
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 234 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 234 → 68
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 235 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 235 → 69
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 235 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 235 → 69
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 235 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 235 → 69
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 235 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 235 → 69
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 235 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 235 → 69
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 235 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 235 → 69
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 235 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 235 → 69
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 235 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 235 → 69
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 235 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 235 → 69
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 429
+❌ Response não OK!
+
+❌❌❌ ERRO CAPTURADO: Waze API retornou: 429
+Stack: Error: Waze API retornou: 429
+    at file:///home/servicedesk/municipal-assistant/server.js:189:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 429
+❌ Response não OK!
+
+❌❌❌ ERRO CAPTURADO: Waze API retornou: 429
+Stack: Error: Waze API retornou: 429
+    at file:///home/servicedesk/municipal-assistant/server.js:189:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 429
+❌ Response não OK!
+
+❌❌❌ ERRO CAPTURADO: Waze API retornou: 429
+Stack: Error: Waze API retornou: 429
+    at file:///home/servicedesk/municipal-assistant/server.js:189:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 235 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 235 → 70
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 429
+❌ Response não OK!
+
+❌❌❌ ERRO CAPTURADO: Waze API retornou: 429
+Stack: Error: Waze API retornou: 429
+    at file:///home/servicedesk/municipal-assistant/server.js:189:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 235 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 235 → 70
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Buscando sirenes...
+📡 Response status: 429
+❌ Response não OK!
+
+❌❌❌ ERRO CAPTURADO: Waze API retornou: 429
+Stack: Error: Waze API retornou: 429
+    at file:///home/servicedesk/municipal-assistant/server.js:189:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+✅ 162 sirenes | Online: 161
+📡 Response status: 200
+📊 Dados recebidos: 235 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 235 → 70
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 235 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 235 → 70
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 429
+❌ Response não OK!
+
+❌❌❌ ERRO CAPTURADO: Waze API retornou: 429
+Stack: Error: Waze API retornou: 429
+    at file:///home/servicedesk/municipal-assistant/server.js:189:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 429
+❌ Response não OK!
+
+❌❌❌ ERRO CAPTURADO: Waze API retornou: 429
+Stack: Error: Waze API retornou: 429
+    at file:///home/servicedesk/municipal-assistant/server.js:189:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 218 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 218 → 71
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+
+🔴🔴🔴 ENDPOINT /api/waze/filtrado CHAMADO! 🔴🔴🔴
+
+🚗 Buscando alertas do Waze (filtrado por hierarquia)...
+📡 Response status: 200
+📊 Dados recebidos: 217 alertas
+🔍 Iniciando filtragem...
+✅ Filtrado: 217 → 69
+
+🔵🔵🔵 ENDPOINT /api/waze/filtrado FINALIZADO! 🔵🔵🔵
+
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161
+📡 Buscando sirenes...
+✅ 162 sirenes | Online: 161

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Activity, Cloud, Car, Droplets, AlertCircle, Zap, TrendingUp, Sun, Radio } from 'lucide-react';
 import Dashboard from './Dashboard';
+import Map from './Map';
 
 const App = () => {
   const [messages, setMessages] = useState([]);
@@ -226,74 +227,73 @@ const App = () => {
   };
 
   const processSirensData = (data, type, location = null) => {
-  // AGORA A API RETORNA UM ARRAY DIRETO!
-  if (!data || !Array.isArray(data) || data.length === 0) {
-    return '❌ Dados de sirenes indisponíveis';
-  }
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      return '❌ Dados de sirenes indisponíveis';
+    }
 
-  const sirenes = data; // Agora é um array direto!
-  const total = sirenes.length;
-  const online = sirenes.filter(s => s.online === true).length;
-  const offline = total - online;
-  const emAlerta = sirenes.filter(s => s.tocando === true).length;
+    const sirenes = data;
+    const total = sirenes.length;
+    const online = sirenes.filter(s => s.online === true).length;
+    const offline = total - online;
+    const emAlerta = sirenes.filter(s => s.tocando === true).length;
 
-  if (type === 'sirens_status') {
-    const ultimaAtualizacao = sirenes[0]?.ultimaAtualizacao 
-      ? new Date(sirenes[0].ultimaAtualizacao).toLocaleString('pt-BR')
-      : 'Não disponível';
+    if (type === 'sirens_status') {
+      const ultimaAtualizacao = sirenes[0]?.ultimaAtualizacao 
+        ? new Date(sirenes[0].ultimaAtualizacao).toLocaleString('pt-BR')
+        : 'Não disponível';
+        
+      return `🚨 STATUS GERAL DAS SIRENES\n\nÚltima atualização: ${ultimaAtualizacao}\n\n📊 Estatísticas:\n• Total: ${total} sirenes\n• Online: ${online} (${((online/total)*100).toFixed(1)}%)\n• Offline: ${offline} (${((offline/total)*100).toFixed(1)}%)\n• Em alerta: ${emAlerta}\n\n${online/total >= 0.95 ? '✅' : '⚠️'} Sistema com ${((online/total)*100).toFixed(1)}% de disponibilidade`;
+    }
+
+    if (type === 'sirens_offline') {
+      const sirenasOffline = sirenes.filter(s => s.online === false);
+      if (sirenasOffline.length === 0) {
+        return '✅ EXCELENTE!\n\nTodas as sirenes estão online no momento.';
+      }
+      let response = `⚠️ SIRENES OFFLINE (${sirenasOffline.length})\n\n`;
+      sirenasOffline.slice(0, 15).forEach((s, i) => {
+        response += `${i + 1}. ${s.nome}\n   📍 ${s.localizacao}\n\n`;
+      });
+      if (sirenasOffline.length > 15) {
+        response += `...e mais ${sirenasOffline.length - 15} sirenes offline.`;
+      }
+      return response;
+    }
+
+    if (type === 'sirens_alert') {
+      const sirenasAlerta = sirenes.filter(s => s.tocando === true);
+      if (sirenasAlerta.length === 0) {
+        return '✅ SITUAÇÃO NORMAL\n\nNenhuma sirene em estado de alerta.\nCidade em condições normais.';
+      }
+      let response = `🚨 ATENÇÃO - SIRENES EM ALERTA (${sirenasAlerta.length})\n\n`;
+      sirenasAlerta.forEach((s, i) => {
+        response += `${i + 1}. 🔴 ${s.nome}\n   ⚠️ ALERTA ATIVO\n   📍 ${s.localizacao}\n\n`;
+      });
+      return response;
+    }
+
+    if (type === 'sirens_location' && location) {
+      const sirenasLocal = sirenes.filter(s => 
+        s.nome.toLowerCase().includes(location.toLowerCase())
+      );
       
-    return `🚨 STATUS GERAL DAS SIRENES\n\nÚltima atualização: ${ultimaAtualizacao}\n\n📊 Estatísticas:\n• Total: ${total} sirenes\n• Online: ${online} (${((online/total)*100).toFixed(1)}%)\n• Offline: ${offline} (${((offline/total)*100).toFixed(1)}%)\n• Em alerta: ${emAlerta}\n\n${online/total >= 0.95 ? '✅' : '⚠️'} Sistema com ${((online/total)*100).toFixed(1)}% de disponibilidade`;
-  }
-
-  if (type === 'sirens_offline') {
-    const sirenasOffline = sirenes.filter(s => s.online === false);
-    if (sirenasOffline.length === 0) {
-      return '✅ EXCELENTE!\n\nTodas as sirenes estão online no momento.';
-    }
-    let response = `⚠️ SIRENES OFFLINE (${sirenasOffline.length})\n\n`;
-    sirenasOffline.slice(0, 15).forEach((s, i) => {
-      response += `${i + 1}. ${s.nome}\n   📍 ${s.localizacao}\n\n`;
-    });
-    if (sirenasOffline.length > 15) {
-      response += `...e mais ${sirenasOffline.length - 15} sirenes offline.`;
-    }
-    return response;
-  }
-
-  if (type === 'sirens_alert') {
-    const sirenasAlerta = sirenes.filter(s => s.tocando === true);
-    if (sirenasAlerta.length === 0) {
-      return '✅ SITUAÇÃO NORMAL\n\nNenhuma sirene em estado de alerta.\nCidade em condições normais.';
-    }
-    let response = `🚨 ATENÇÃO - SIRENES EM ALERTA (${sirenasAlerta.length})\n\n`;
-    sirenasAlerta.forEach((s, i) => {
-      response += `${i + 1}. 🔴 ${s.nome}\n   ⚠️ ALERTA ATIVO\n   📍 ${s.localizacao}\n\n`;
-    });
-    return response;
-  }
-
-  if (type === 'sirens_location' && location) {
-    const sirenasLocal = sirenes.filter(s => 
-      s.nome.toLowerCase().includes(location.toLowerCase())
-    );
-    
-    if (sirenasLocal.length === 0) {
-      return `❌ NÃO ENCONTRADO\n\nNenhuma sirene encontrada em ${location}.\nVerifique a ortografia ou tente outro nome.`;
-    }
-    
-    let response = `📍 SIRENES EM ${location.toUpperCase()} (${sirenasLocal.length})\n\n`;
-    sirenasLocal.forEach((s, i) => {
-      const statusIcon = s.online ? '✅' : '🔴';
-      const statusText = s.online ? 'Online' : 'Offline';
-      const alertaText = s.tocando ? ' 🚨 EM ALERTA' : '';
+      if (sirenasLocal.length === 0) {
+        return `❌ NÃO ENCONTRADO\n\nNenhuma sirene encontrada em ${location}.\nVerifique a ortografia ou tente outro nome.`;
+      }
       
-      response += `${i + 1}. ${statusIcon} ${s.nome}${alertaText}\n   Status: ${statusText}\n   📍 ${s.localizacao}\n\n`;
-    });
-    return response;
-  }
+      let response = `📍 SIRENES EM ${location.toUpperCase()} (${sirenasLocal.length})\n\n`;
+      sirenasLocal.forEach((s, i) => {
+        const statusIcon = s.online ? '✅' : '🔴';
+        const statusText = s.online ? 'Online' : 'Offline';
+        const alertaText = s.tocando ? ' 🚨 EM ALERTA' : '';
+        
+        response += `${i + 1}. ${statusIcon} ${s.nome}${alertaText}\n   Status: ${statusText}\n   📍 ${s.localizacao}\n\n`;
+      });
+      return response;
+    }
 
-  return `🚨 SIRENES\n\nTotal: ${total}\n✅ Online: ${online}\n❌ Offline: ${offline}\n⚠️ Alerta: ${emAlerta}`;
-};
+    return `🚨 SIRENES\n\nTotal: ${total}\n✅ Online: ${online}\n❌ Offline: ${offline}\n⚠️ Alerta: ${emAlerta}`;
+  };
 
   const processWeatherData = (data, type) => {
     const getIcon = (cond) => {
@@ -378,132 +378,127 @@ const App = () => {
   };
 
   const processWazeData = (data, type) => {
-  if (!data || !data.alerts) return '⚠️ Dados indisponíveis';
+    if (!data || !data.alerts) return '⚠️ Dados indisponíveis';
 
-  const alerts = data.alerts;
-  
-  // Função para calcular gravidade baseada em confidence e reliability
-  const calculateSeverity = (alert) => {
-    const score = (alert.confidence || 0) + (alert.reliability || 0);
-    if (score >= 12) return { level: 'CRÍTICO', icon: '🔴', estimate: '2-3 km' };
-    if (score >= 8) return { level: 'ALTO', icon: '🟠', estimate: '1-2 km' };
-    if (score >= 5) return { level: 'MODERADO', icon: '🟡', estimate: '500m-1km' };
-    return { level: 'LEVE', icon: '🟢', estimate: '200-500m' };
-  };
-  
-  // Função para estimar atraso baseado na gravidade
-  const estimateDelay = (severity) => {
-    const delays = {
-      'CRÍTICO': '15-25 min',
-      'ALTO': '8-15 min',
-      'MODERADO': '3-8 min',
-      'LEVE': '1-3 min'
+    const alerts = data.alerts;
+    
+    const calculateSeverity = (alert) => {
+      const score = (alert.confidence || 0) + (alert.reliability || 0);
+      if (score >= 12) return { level: 'CRÍTICO', icon: '🔴', estimate: '2-3 km' };
+      if (score >= 8) return { level: 'ALTO', icon: '🟠', estimate: '1-2 km' };
+      if (score >= 5) return { level: 'MODERADO', icon: '🟡', estimate: '500m-1km' };
+      return { level: 'LEVE', icon: '🟢', estimate: '200-500m' };
     };
-    return delays[severity] || '5-10 min';
-  };
-  
-  // Função auxiliar para extrair bairro
-  const extractNeighborhood = (alert) => {
-    return alert.city || 'Região não identificada';
-  };
-  
-  if (type === 'jams') {
-    const jams = alerts
-      .filter(a => a.type === 'JAM')
-      .map(jam => ({
-        ...jam,
-        severity: calculateSeverity(jam)
-      }))
-      .sort((a, b) => {
-        // Ordena por gravidade (confidence + reliability)
-        const scoreA = (a.confidence || 0) + (a.reliability || 0);
-        const scoreB = (b.confidence || 0) + (b.reliability || 0);
-        return scoreB - scoreA;
-      })
-      .slice(0, 10);
+    
+    const estimateDelay = (severity) => {
+      const delays = {
+        'CRÍTICO': '15-25 min',
+        'ALTO': '8-15 min',
+        'MODERADO': '3-8 min',
+        'LEVE': '1-3 min'
+      };
+      return delays[severity] || '5-10 min';
+    };
+    
+    const extractNeighborhood = (alert) => {
+      return alert.city || 'Região não identificada';
+    };
+    
+    if (type === 'jams') {
+      const jams = alerts
+        .filter(a => a.type === 'JAM')
+        .map(jam => ({
+          ...jam,
+          severity: calculateSeverity(jam)
+        }))
+        .sort((a, b) => {
+          const scoreA = (a.confidence || 0) + (a.reliability || 0);
+          const scoreB = (b.confidence || 0) + (b.reliability || 0);
+          return scoreB - scoreA;
+        })
+        .slice(0, 10);
+        
+      if (jams.length === 0) {
+        return '✅ TRÂNSITO FLUINDO\n\nNenhum congestionamento significativo reportado no momento.';
+      }
       
-    if (jams.length === 0) {
-      return '✅ TRÂNSITO FLUINDO\n\nNenhum congestionamento significativo reportado no momento.';
-    }
-    
-    let response = `🚗 CONGESTIONAMENTOS CRÍTICOS (${jams.length})\n\n`;
-    
-    jams.forEach((jam, i) => {
-      const street = jam.street || 'Via não identificada';
-      const neighborhood = extractNeighborhood(jam);
-      const severity = jam.severity;
-      const delay = estimateDelay(severity.level);
-      const reports = jam.reportRating > 0 ? `${jam.reportRating} reportes` : 'Dados do Waze';
+      let response = `🚗 CONGESTIONAMENTOS CRÍTICOS (${jams.length})\n\n`;
       
-      response += `${i + 1}. ${severity.icon} **${street}**\n`;
-      response += `   📍 ${neighborhood}\n`;
-      response += `   🚗 Extensão estimada: ${severity.estimate}\n`;
-      response += `   ⏱️ Atraso estimado: ${delay}\n`;
-      response += `   📊 Nível: ${severity.level}\n`;
-      response += `   👥 Fonte: ${reports}\n\n`;
-    });
-    
-    response += `💡 *Estimativas baseadas em dados de confiabilidade do Waze`;
-    
-    return response;
-  }
-
-  if (type === 'road_closed') {
-    const closed = alerts.filter(a => a.type === 'ROAD_CLOSED').slice(0, 10);
-    if (closed.length === 0) {
-      return '✅ TODAS AS VIAS ABERTAS\n\nNenhuma interdição reportada no momento.';
+      jams.forEach((jam, i) => {
+        const street = jam.street || 'Via não identificada';
+        const neighborhood = extractNeighborhood(jam);
+        const severity = jam.severity;
+        const delay = estimateDelay(severity.level);
+        const reports = jam.reportRating > 0 ? `${jam.reportRating} reportes` : 'Dados do Waze';
+        
+        response += `${i + 1}. ${severity.icon} **${street}**\n`;
+        response += `   📍 ${neighborhood}\n`;
+        response += `   🚗 Extensão estimada: ${severity.estimate}\n`;
+        response += `   ⏱️ Atraso estimado: ${delay}\n`;
+        response += `   📊 Nível: ${severity.level}\n`;
+        response += `   👥 Fonte: ${reports}\n\n`;
+      });
+      
+      response += `💡 *Estimativas baseadas em dados de confiabilidade do Waze`;
+      
+      return response;
     }
-    
-    let response = `🚧 VIAS INTERDITADAS (${closed.length})\n\n`;
-    closed.forEach((c, i) => {
-      const street = c.street || 'Via não identificada';
-      const neighborhood = extractNeighborhood(c);
-      response += `${i + 1}. 🚫 ${street}\n   📍 ${neighborhood}\n\n`;
-    });
-    return response;
-  }
 
-  if (type === 'accidents') {
-    const accidents = alerts.filter(a => a.type === 'ACCIDENT').slice(0, 8);
-    if (accidents.length === 0) {
-      return '✅ SEM ACIDENTES\n\nNenhum acidente reportado no momento.';
+    if (type === 'road_closed') {
+      const closed = alerts.filter(a => a.type === 'ROAD_CLOSED').slice(0, 10);
+      if (closed.length === 0) {
+        return '✅ TODAS AS VIAS ABERTAS\n\nNenhuma interdição reportada no momento.';
+      }
+      
+      let response = `🚧 VIAS INTERDITADAS (${closed.length})\n\n`;
+      closed.forEach((c, i) => {
+        const street = c.street || 'Via não identificada';
+        const neighborhood = extractNeighborhood(c);
+        response += `${i + 1}. 🚫 ${street}\n   📍 ${neighborhood}\n\n`;
+      });
+      return response;
     }
-    
-    let response = `💥 ACIDENTES REPORTADOS (${accidents.length})\n\n`;
-    accidents.forEach((acc, i) => {
-      const street = acc.street || 'Local não identificado';
-      const neighborhood = extractNeighborhood(acc);
-      const reports = acc.reportRating > 0 ? `(${acc.reportRating} reportes)` : '';
-      response += `${i + 1}. ⚠️ ${street}\n   📍 ${neighborhood} ${reports}\n\n`;
-    });
-    return response;
-  }
 
-  if (type === 'floods_waze') {
-    const floods = alerts.filter(a => a.subtype === 'HAZARD_WEATHER_FLOOD').slice(0, 10);
-    if (floods.length === 0) {
-      return '✅ SEM ALAGAMENTOS\n\nNenhum alagamento reportado no momento.';
+    if (type === 'accidents') {
+      const accidents = alerts.filter(a => a.type === 'ACCIDENT').slice(0, 8);
+      if (accidents.length === 0) {
+        return '✅ SEM ACIDENTES\n\nNenhum acidente reportado no momento.';
+      }
+      
+      let response = `💥 ACIDENTES REPORTADOS (${accidents.length})\n\n`;
+      accidents.forEach((acc, i) => {
+        const street = acc.street || 'Local não identificado';
+        const neighborhood = extractNeighborhood(acc);
+        const reports = acc.reportRating > 0 ? `(${acc.reportRating} reportes)` : '';
+        response += `${i + 1}. ⚠️ ${street}\n   📍 ${neighborhood} ${reports}\n\n`;
+      });
+      return response;
     }
-    
-    let response = `🌊 ALAGAMENTOS REPORTADOS (${floods.length})\n\n`;
-    floods.forEach((f, i) => {
-      const street = f.street || 'Local não identificado';
-      const neighborhood = extractNeighborhood(f);
-      response += `${i + 1}. 💧 ${street}\n   📍 ${neighborhood}\n\n`;
-    });
-    return response;
-  }
 
-  // Resposta padrão (overview)
-  const jamsCount = alerts.filter(a => a.type === 'JAM').length;
-  const accidentsCount = alerts.filter(a => a.type === 'ACCIDENT').length;
-  const closedCount = alerts.filter(a => a.type === 'ROAD_CLOSED').length;
-  
-  return `🚗 RESUMO DO TRÂNSITO\n\n` +
-         `🔴 Congestionamentos: ${jamsCount}\n` +
-         `💥 Acidentes: ${accidentsCount}\n` +
-         `🚧 Vias Fechadas: ${closedCount}`;
-};
+    if (type === 'floods_waze') {
+      const floods = alerts.filter(a => a.subtype === 'HAZARD_WEATHER_FLOOD').slice(0, 10);
+      if (floods.length === 0) {
+        return '✅ SEM ALAGAMENTOS\n\nNenhum alagamento reportado no momento.';
+      }
+      
+      let response = `🌊 ALAGAMENTOS REPORTADOS (${floods.length})\n\n`;
+      floods.forEach((f, i) => {
+        const street = f.street || 'Local não identificado';
+        const neighborhood = extractNeighborhood(f);
+        response += `${i + 1}. 💧 ${street}\n   📍 ${neighborhood}\n\n`;
+      });
+      return response;
+    }
+
+    const jamsCount = alerts.filter(a => a.type === 'JAM').length;
+    const accidentsCount = alerts.filter(a => a.type === 'ACCIDENT').length;
+    const closedCount = alerts.filter(a => a.type === 'ROAD_CLOSED').length;
+    
+    return `🚗 RESUMO DO TRÂNSITO\n\n` +
+           `🔴 Congestionamentos: ${jamsCount}\n` +
+           `💥 Acidentes: ${accidentsCount}\n` +
+           `🚧 Vias Fechadas: ${closedCount}`;
+  };
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -531,10 +526,10 @@ const App = () => {
         fetchAPI(APIs.waze)
       ]);
 
-      responseContent = `📊 PANORAMA COMPLETO - RIO DE JANEIRO\n${new Date().toLocaleString('pt-BR')}\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
-                       processSirensData(sirensData, 'sirens_status') + '\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
-                       processWeatherData(weatherCurrent, 'weather_current') + '\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
-                       processRainData(rainData, 'rain_general') + '\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+      responseContent = `📊 PANORAMA COMPLETO - RIO DE JANEIRO\n${new Date().toLocaleString('pt-BR')}\n\n━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                       processSirensData(sirensData, 'sirens_status') + '\n\n━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+                       processWeatherData(weatherCurrent, 'weather_current') + '\n\n━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+                       processRainData(rainData, 'rain_general') + '\n\n━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
                        processWazeData(wazeData, 'default');
     } else if (intent.category === 'sirens') {
       const sirensData = await fetchAPI(APIs.sirenes);
@@ -576,7 +571,7 @@ const App = () => {
               <div className="relative">
                 <Zap className="w-8 h-8 text-cyan-400" />
                 <div className="absolute inset-0 blur-xl bg-cyan-400/50 animate-pulse"></div>
-                </div>
+              </div>
               <div>
                 <h1 className="text-2xl font-bold text-white">JARVIS Municipal Rio</h1>
                 <p className="text-xs text-cyan-400">Sirenes • Previsão • Chuvas • Trânsito</p>
@@ -622,11 +617,25 @@ const App = () => {
           >
             📊 Dashboard
           </button>
+          <button
+            onClick={() => setActiveView('map')}
+            className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+              activeView === 'map'
+                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/30'
+                : 'bg-slate-800/50 text-slate-400 hover:bg-slate-700/50 border border-cyan-500/20'
+            }`}
+          >
+            🗺️ Mapa
+          </button>
         </div>
       </div>
 
       {activeView === 'dashboard' ? (
         <Dashboard />
+      ) : activeView === 'map' ? (
+        <div className="max-w-7xl mx-auto px-6 pb-8">
+          <Map />
+        </div>
       ) : (
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="mb-6">
