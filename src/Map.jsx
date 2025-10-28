@@ -1,16 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Radio, Droplets, Car, AlertCircle, Layers, X } from 'lucide-react';
+import { Radio, Droplets, Car, AlertCircle, Layers, X, Menu } from 'lucide-react';
 
 const Map = () => {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const [loading, setLoading] = useState(true);
+  const [painelAberto, setPainelAberto] = useState(true);
+  
+  // Constantes de layout
+  const SIDEBAR_WIDTH = 380;
+  const MARGIN_RIGHT = 0;
+  const MARGIN_BOTTOM = 0;
+  
   const [layers, setLayers] = useState({
     sirenes: false,
     pluviometros: false,
     transito: true,
     logradouros: false
   });
+  
   const [stats, setStats] = useState({
     sirenes: 0,
     pluviometros: 0,
@@ -26,8 +34,8 @@ const Map = () => {
   const [filtrosWaze, setFiltrosWaze] = useState({
     buracos: false,
     obras: false,
-    transito_parado: false,
-    transito_lento: true,
+    transito_parado: true,
+    transito_lento: false,
     carros_parados: true,
     semaforo: false,
     eventos: false,
@@ -35,44 +43,283 @@ const Map = () => {
     via_fechada: false
   });
 
-  const [mostrarApenasSirenesAtivas, setMostrarApenasSirenesAtivas] = useState(true);
-  const [mostrarApenasChuva, setMostrarApenasChuva] = useState(true);
+  const [mostrarApenasSirenesAtivas, setMostrarApenasSirenesAtivas] = useState(false);
+  const [mostrarApenasChuva, setMostrarApenasChuva] = useState(false);
 
   useEffect(() => {
-    const loadLeaflet = async () => {
-      console.log('🔧 loadLeaflet iniciado');
-      
-      if (!document.getElementById('leaflet-css')) {
-        const link = document.createElement('link');
-        link.id = 'leaflet-css';
-        link.rel = 'stylesheet';
-        link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-        document.head.appendChild(link);
-      }
-      console.log('✅ CSS do Leaflet adicionado');
+    if (mapInstanceRef.current) {
+      console.log('🔄 [MAP] Invalidando tamanho do mapa');
+      setTimeout(() => {
+        mapInstanceRef.current.invalidateSize();
+      }, 300);
+    }
+  }, [painelAberto]);
 
-      if (!window.L) {
-        console.log('📦 Carregando script Leaflet...');
-        await new Promise((resolve, reject) => {
-          const script = document.createElement('script');
-          script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-          script.onload = resolve;
-          script.onerror = reject;
-          document.body.appendChild(script);
+  useEffect(() => {
+    if (mapInstanceRef.current && layers.transito) {
+      console.log('🚗 [WAZE] Recarregando alertas com filtros:', filtrosWaze);
+      fetch('/api/waze/filtrado')
+        .then(r => r.json())
+        .then(data => {
+          console.log('📊 [WAZE] Dados recebidos:', data);
+          addTransitoLayer(mapInstanceRef.current, window.L, data);
+        })
+        .catch(err => console.error('❌ [WAZE] Erro ao recarregar alertas:', err));
+    }
+  }, [filtrosWaze]);
+
+
+  // Recarregar pluviômetros quando o filtro de chuva mudar
+useEffect(() => {
+  if (mapInstanceRef.current && layers.pluviometros) {
+    console.log('🔄 [PLUVIO] Recarregando com filtro:', mostrarApenasChuva);
+    fetch('/api/pluviometria')
+      .then(r => r.json())
+      .then(data => {
+        const L = window.L;
+        
+        console.log('💧 [PLUVIO] Adicionando', data.features?.length || 0, 'pluviômetros');
+        console.log('🔍 [PLUVIO] Filtro "apenas com chuva":', mostrarApenasChuva);
+        
+        if (layerGroupsRef.current.pluviometros) {
+          layerGroupsRef.current.pluviometros.clearLayers();
+        }
+        
+        const layerGroup = L.layerGroup().addTo(mapInstanceRef.current);
+        layerGroupsRef.current.pluviometros = layerGroup;
+        
+        let count = 0;
+        let skipped = 0;
+        
+        data.features?.forEach(feature => {
+          const props = feature.properties;
+          const coords = feature.geometry.coordinates;
+          
+          // ✅ ACESSA OS CAMPOS CORRETOS
+          const nome = props.station?.name || 'Desconhecido';
+          
+          // ✅ CONVERTE STRING COM VÍRGULA PARA NÚMERO
+          const m15 = props.data?.m15 || '0';
+          const h01 = props.data?.h01 || '0';
+          const h24 = props.data?.h24 || '0';
+          
+          // Substitui vírgula por ponto e converte para número
+          const intensidade = parseFloat(m15.replace(',', '.')) || 0;
+          const chuva1h = parseFloat(h01.replace(',', '.')) || 0;
+          const chuva24h = parseFloat(h24.replace(',', '.')) || 0;
+          
+          // ✅ FILTRO: Se marcado "apenas com chuva" E intensidade = 0
+          if (mostrarApenasChuva && intensidade === 0) {
+            skipped++;
+            return;
+          }
+          
+          // 🎨 CORES SEGUINDO LEGENDA OFICIAL
+          let color = '#22c55e'; // 🟢 Verde - Sem Chuva
+          let label = 'Sem Chuva';
+          
+          if (intensidade > 50.0) {
+            color = '#dc2626'; // 🔴 Vermelho - Muito Forte
+            label = 'Chuva Muito Forte';
+          } else if (intensidade >= 25.1) {
+            color = '#f97316'; // 🟠 Laranja - Forte
+            label = 'Chuva Forte';
+          } else if (intensidade >= 5.1) {
+            color = '#eab308'; // 🟡 Amarelo - Moderada
+            label = 'Chuva Moderada';
+          } else if (intensidade >= 0.2) {
+            color = '#3b82f6'; // 🔵 Azul - Fraca
+            label = 'Chuva Fraca';
+          }
+          
+          const icon = L.divIcon({
+            html: `
+              <div style="
+                width: 20px;
+                height: 20px;
+                background: ${color};
+                border: 2px solid white;
+                border-radius: 50%;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+              "></div>
+            `,
+            className: '',
+            iconSize: [20, 20],
+            iconAnchor: [10, 10]
+          });
+
+          L.marker([coords[1], coords[0]], { icon }).addTo(layerGroup)
+            .bindPopup(`
+              <div style="min-width: 200px; font-family: 'Inter', sans-serif;">
+                <div style="
+                  font-weight: 600; 
+                  color: ${color}; 
+                  margin-bottom: 8px;
+                  font-size: 14px;
+                ">
+                  💧 ${nome}
+                </div>
+                <div style="
+                  padding: 8px;
+                  background: ${color}22;
+                  border-left: 3px solid ${color};
+                  margin-bottom: 8px;
+                  border-radius: 4px;
+                ">
+                  <div style="font-weight: 600; color: ${color};">${label}</div>
+                </div>
+                <div style="font-size: 12px; color: #475569; line-height: 1.6;">
+                  <div style="margin-bottom: 4px;">
+                    <strong style="color: #1e293b;">15 min:</strong> ${intensidade.toFixed(1)} mm
+                  </div>
+                  <div style="margin-bottom: 4px;">
+                    <strong style="color: #1e293b;">1 hora:</strong> ${chuva1h.toFixed(1)} mm
+                  </div>
+                  <div>
+                    <strong style="color: #1e293b;">24 horas:</strong> ${chuva24h.toFixed(1)} mm
+                  </div>
+                </div>
+              </div>
+            `);
+          count++;
         });
-        console.log('✅ Script Leaflet carregado!');
-      }
+        
+        console.log('✅ [PLUVIO]', count, 'marcadores adicionados');
+        console.log('⏭️  [PLUVIO]', skipped, 'pluviômetros filtrados (sem chuva)');
+      })
+      .catch(err => console.error('❌ [PLUVIO] Erro ao recarregar:', err));
+  }
+}, [mostrarApenasChuva, layers.pluviometros]);
 
-      console.log('📍 Pronto para inicializar mapa');
-      initializeMap();
+
+  // Recarregar sirenes quando o filtro de tocando mudar
+useEffect(() => {
+  if (mapInstanceRef.current && layers.sirenes) {
+    console.log('🔄 [SIRENES] Recarregando com filtro:', mostrarApenasSirenesAtivas);
+    fetch('/api/sirenes')
+      .then(r => r.json())
+      .then(data => {
+        addSirenesLayer(mapInstanceRef.current, window.L, data);
+      })
+      .catch(err => console.error('❌ [SIRENES] Erro ao recarregar:', err));
+  }
+}, [mostrarApenasSirenesAtivas]);
+
+  // NOVA ABORDAGEM: Inicialização completa em um único useEffect
+  useEffect(() => {
+    console.log('🚀 [MAP] Iniciando componente Map');
+    
+    let mounted = true;
+    let initAttempt = 0;
+    const MAX_ATTEMPTS = 50;
+
+    const loadLeaflet = async () => {
+      try {
+        console.log('📦 [LEAFLET] Carregando CSS...');
+        if (!document.getElementById('leaflet-css')) {
+          const link = document.createElement('link');
+          link.id = 'leaflet-css';
+          link.rel = 'stylesheet';
+          link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+          document.head.appendChild(link);
+          console.log('✅ [LEAFLET] CSS carregado');
+        }
+
+        console.log('📦 [LEAFLET] Carregando JS...');
+        if (!window.L) {
+          await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+            script.onload = () => {
+              console.log('✅ [LEAFLET] JS carregado com sucesso');
+              resolve();
+            };
+            script.onerror = () => {
+              console.error('❌ [LEAFLET] Erro ao carregar JS');
+              reject(new Error('Falha ao carregar Leaflet'));
+            };
+            document.body.appendChild(script);
+          });
+        } else {
+          console.log('✅ [LEAFLET] JS já estava carregado');
+        }
+
+        return true;
+      } catch (error) {
+        console.error('❌ [LEAFLET] Erro:', error);
+        return false;
+      }
     };
 
-    const timer = setTimeout(() => {
-      loadLeaflet();
-    }, 100);
+    const tryInitializeMap = () => {
+      initAttempt++;
+      console.log(`🔍 [MAP] Tentativa ${initAttempt}/${MAX_ATTEMPTS} de encontrar container`);
+      
+      if (!mounted) {
+        console.log('⚠️ [MAP] Componente desmontado, abortando');
+        return;
+      }
+
+      if (!mapRef.current) {
+        console.log(`⏳ [MAP] Container não encontrado na tentativa ${initAttempt}`);
+        
+        // Tenta também por ID como backup
+        const containerById = document.getElementById('leaflet-map-container');
+        if (containerById) {
+          console.log('✅ [MAP] Container encontrado por ID!');
+          mapRef.current = containerById;
+        }
+      }
+
+      if (mapRef.current) {
+        console.log('✅ [MAP] Container encontrado!', mapRef.current);
+        console.log('📏 [MAP] Dimensões:', {
+          width: mapRef.current.offsetWidth,
+          height: mapRef.current.offsetHeight,
+          display: window.getComputedStyle(mapRef.current).display,
+          visibility: window.getComputedStyle(mapRef.current).visibility
+        });
+
+        if (mapRef.current.offsetWidth === 0 || mapRef.current.offsetHeight === 0) {
+          console.warn('⚠️ [MAP] Container encontrado mas tem dimensão zero!');
+          if (initAttempt < MAX_ATTEMPTS) {
+            setTimeout(tryInitializeMap, 100);
+            return;
+          }
+        }
+
+        initializeMap();
+      } else if (initAttempt < MAX_ATTEMPTS) {
+        // Usa requestAnimationFrame para aguardar o próximo frame
+        requestAnimationFrame(() => {
+          setTimeout(tryInitializeMap, 50);
+        });
+      } else {
+        console.error('❌ [MAP] TIMEOUT: Container não encontrado após', MAX_ATTEMPTS, 'tentativas');
+        setLoading(false);
+      }
+    };
+
+    const start = async () => {
+      const leafletLoaded = await loadLeaflet();
+      if (!leafletLoaded || !mounted) {
+        setLoading(false);
+        return;
+      }
+
+      // Aguarda um pouco para o DOM estar completamente pronto
+      setTimeout(() => {
+        if (mounted) {
+          tryInitializeMap();
+        }
+      }, 200);
+    };
+
+    start();
 
     return () => {
-      clearTimeout(timer);
+      console.log('🧹 [MAP] Limpando componente');
+      mounted = false;
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
@@ -80,760 +327,1267 @@ const Map = () => {
     };
   }, []);
 
-  const initializeMap = async (attempt = 1) => {
-    console.log(`🗺️ initializeMap chamado (tentativa ${attempt})`);
-    console.log('mapRef.current:', mapRef.current);
-    console.log('mapInstanceRef.current:', mapInstanceRef.current);
+  const initializeMap = async () => {
+    console.log('🗺️ [MAP] initializeMap() chamado');
     
     if (!mapRef.current) {
-      if (attempt < 20) {
-        console.log(`⏳ mapRef ainda null, tentando novamente em 50ms...`);
-        setTimeout(() => initializeMap(attempt + 1), 50);
-        return;
-      } else {
-        console.error('❌ mapRef.current é null após 20 tentativas!');
-        setLoading(false);
-        return;
-      }
+      console.error('❌ [MAP] ERRO: mapRef.current é null em initializeMap()');
+      setLoading(false);
+      return;
     }
     
     if (mapInstanceRef.current) {
-      console.log('⚠️ Mapa já existe, ignorando...');
+      console.log('⚠️ [MAP] Mapa já foi inicializado');
       return;
     }
 
     const L = window.L;
-    console.log('✅ window.L existe:', !!L);
+    if (!L) {
+      console.error('❌ [MAP] Leaflet não está disponível');
+      setLoading(false);
+      return;
+    }
 
     try {
-      console.log('🌍 Criando mapa...');
+      console.log('🌍 [MAP] Criando mapa Leaflet...');
+      
       const map = L.map(mapRef.current, {
-        zoomControl: true,
+        zoomControl: false,
         attributionControl: true
       }).setView([-22.9068, -43.1729], 11);
 
-      console.log('✅ Mapa criado!');
+      console.log('✅ [MAP] Instância do mapa criada');
 
+      console.log('🎮 [MAP] Adicionando controles...');
+      L.control.zoom({
+        position: 'topright'
+      }).addTo(map);
+
+      console.log('🗺️ [MAP] Adicionando tiles...');
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors',
         maxZoom: 19
       }).addTo(map);
 
-      console.log('✅ TileLayer adicionado!');
-
       mapInstanceRef.current = map;
+      console.log('✅ [MAP] Mapa configurado com sucesso');
 
-      console.log('📡 Carregando dados das APIs...');
+      // Força invalidação do tamanho
+      setTimeout(() => {
+        map.invalidateSize();
+        console.log('🔄 [MAP] Tamanho invalidado');
+      }, 100);
+
+      console.log('📡 [MAP] Carregando dados das APIs...');
       await loadAllLayers(map, L);
       
       setLoading(false);
-      console.log('🎉 Mapa pronto!');
+      console.log('🎉 [MAP] Inicialização COMPLETA!');
     } catch (error) {
-      console.error('❌ Erro ao criar mapa:', error);
+      console.error('❌ [MAP] Erro ao inicializar:', error);
+      console.error('🔍 Stack:', error.stack);
       setLoading(false);
     }
   };
 
   const loadAllLayers = async (map, L) => {
     try {
-      console.log('🚨 Buscando sirenes...');
-      const sirenes = await fetch('/api/sirenes').then(r => r.json());
-      console.log(`✅ ${sirenes.length} sirenes carregadas`);
+      console.log('📡 [API] Buscando sirenes...');
+      const sirenes = await fetch('/api/sirenes')
+        .then(r => {
+          console.log('📡 [API] Sirenes - Status:', r.status);
+          return r.json();
+        })
+        .catch(err => {
+          console.error('❌ [API] Erro sirenes:', err);
+          return [];
+        });
+      
+      console.log('📊 [SIRENES]', sirenes.length, 'sirenes recebidas');
       if (layers.sirenes) addSirenesLayer(map, L, sirenes);
       setStats(prev => ({ ...prev, sirenes: sirenes.length }));
 
-      console.log('💧 Buscando pluviômetros...');
-      const pluvio = await fetch('/api/pluviometria').then(r => r.json());
-      console.log(`✅ ${pluvio.features?.length || 0} pluviômetros carregados`);
+      console.log('📡 [API] Buscando pluviometria...');
+      const pluvio = await fetch('/api/pluviometria')
+        .then(r => {
+          console.log('📡 [API] Pluviometria - Status:', r.status);
+          return r.json();
+        })
+        .catch(err => {
+          console.error('❌ [API] Erro pluviometria:', err);
+          return { features: [] };
+        });
+      
+      console.log('📊 [PLUVIO]', pluvio.features?.length || 0, 'pluviômetros recebidos');
       if (layers.pluviometros) addPluviometrosLayer(map, L, pluvio);
       setStats(prev => ({ ...prev, pluviometros: pluvio.features?.length || 0 }));
 
-      console.log('🚗 Buscando dados Waze...');
-      const waze = await fetch('/api/waze/filtrado').then(r => r.json());
-      console.log(`✅ ${waze.alerts?.length || 0} alertas carregados`);
+      console.log('📡 [API] Buscando Waze...');
+      const waze = await fetch('/api/waze/filtrado')
+        .then(r => {
+          console.log('📡 [API] Waze - Status:', r.status);
+          return r.json();
+        })
+        .catch(err => {
+          console.error('❌ [API] Erro Waze:', err);
+          return { alerts: [] };
+        });
+      
+      console.log('📊 [WAZE]', waze.alerts?.length || 0, 'alertas recebidos');
       if (layers.transito) addTransitoLayer(map, L, waze);
       setStats(prev => ({ ...prev, transito: waze.alerts?.length || 0 }));
 
     } catch (error) {
-      console.error('❌ Erro ao carregar camadas:', error);
+      console.error('❌ [API] Erro geral:', error);
     }
   };
 
   const addSirenesLayer = (map, L, sirenes) => {
-    if (layerGroupsRef.current.sirenes) {
-      layerGroupsRef.current.sirenes.clearLayers();
+  console.log('🚨 [SIRENES] Adicionando', sirenes.length, 'sirenes ao mapa');
+  console.log('🔍 [SIRENES] Filtro "apenas tocando":', mostrarApenasSirenesAtivas);
+  
+  if (layerGroupsRef.current.sirenes) {
+    layerGroupsRef.current.sirenes.clearLayers();
+  }
+  
+  const layerGroup = L.layerGroup().addTo(map);
+  layerGroupsRef.current.sirenes = layerGroup;
+  
+  let count = 0;
+  let skipped = 0;
+  
+  sirenes.forEach(sirene => {
+    // ✅ FILTRO: Se marcado "apenas tocando" E sirene NÃO está tocando
+    if (mostrarApenasSirenesAtivas && !sirene.tocando) {
+      skipped++;
+      return;
     }
     
-    const layerGroup = L.layerGroup().addTo(map);
-    layerGroupsRef.current.sirenes = layerGroup;
+    // Cores baseadas no status
+    const color = sirene.tocando ? '#ef4444' : sirene.online ? '#22c55e' : '#64748b';
+    const status = sirene.tocando ? '🔴 TOCANDO' : sirene.online ? '🟢 Online' : '⚫ Offline';
+    const animacao = sirene.tocando ? 'animation: pulse-sirene 1.5s infinite;' : '';
     
-    sirenes.forEach(sirene => {
-      if (mostrarApenasSirenesAtivas && !sirene.tocando) return;
-      
-      const color = sirene.tocando ? '#ef4444' : sirene.online ? '#22c55e' : '#6b7280';
-      const animacao = sirene.tocando ? 'animation: pulse 1s infinite;' : '';
-      
-      const icon = L.divIcon({
-        html: `
-          <style>
-            @keyframes pulse {
-              0%, 100% { 
-                opacity: 1; 
-                transform: scale(1);
-                box-shadow: 0 0 20px ${color}, 0 0 40px ${color};
-              }
-              50% { 
-                opacity: 0.7; 
-                transform: scale(1.2);
-                box-shadow: 0 0 30px ${color}, 0 0 60px ${color};
-              }
+    // SVG de CORNETA/SIRENE
+    const sireneIcon = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+        <path d="M12 2L6 8H2v8h4l6 6V2zm7 4v12c2.2-1.5 4-4.5 4-6s-1.8-4.5-4-6zm0 4.5c1.1.8 2 2.2 2 3.5s-.9 2.7-2 3.5v-7z"/>
+      </svg>
+    `;
+    
+    const icon = L.divIcon({
+      html: `
+        <style>
+          @keyframes pulse-sirene {
+            0%, 100% { 
+              opacity: 1; 
+              transform: scale(1);
+              box-shadow: 0 0 20px ${color}, 0 0 40px ${color};
             }
-          </style>
-          <div style="
-            position: relative;
-            width: 28px;
-            height: 28px;
-            ${animacao}
-          ">
-            <div style="
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-              font-size: 24px;
-              filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-            ">🚨</div>
-            <div style="
-              position: absolute;
-              bottom: -2px;
-              left: 50%;
-              transform: translateX(-50%);
-              width: 12px;
-              height: 4px;
-              background: ${color};
-              border-radius: 2px;
-              box-shadow: 0 0 8px ${color};
-            "></div>
-          </div>
-        `,
-        className: '',
-        iconSize: [28, 28],
-        iconAnchor: [14, 14]
-      });
+            50% { 
+              opacity: 0.8; 
+              transform: scale(1.2);
+              box-shadow: 0 0 30px ${color}, 0 0 60px ${color};
+            }
+          }
+        </style>
+        <div style="
+          width: 32px;
+          height: 32px;
+          background: ${color};
+          border: 3px solid white;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          ${animacao}
+          box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        ">${sireneIcon}</div>
+      `,
+      className: '',
+      iconSize: [32, 32],
+      iconAnchor: [16, 16]
+    });
 
-      const marker = L.marker([sirene.latitude, sirene.longitude], { icon });
-      
-      const statusText = sirene.tocando 
-        ? '⚠️ TOCANDO AGORA!' 
-        : sirene.online 
-        ? '✅ Online' 
-        : '❌ Offline';
-      
-      const statusColor = sirene.tocando 
-        ? '#ef4444' 
-        : sirene.online 
-        ? '#22c55e' 
-        : '#6b7280';
-      
-      const popup = `
-        <div style="font-family: system-ui; min-width: 220px;">
-          <h3 style="margin: 0 0 8px 0; font-size: 15px; font-weight: bold; color: #1e293b;">
-            🚨 ${sirene.nome}
-          </h3>
-          <div style="font-size: 12px; color: #64748b; margin-bottom: 8px;">
-            📍 ${sirene.bairro}
+    L.marker([sirene.latitude, sirene.longitude], { icon }).addTo(layerGroup)
+      .bindPopup(`
+        <div style="min-width: 220px; font-family: 'Inter', sans-serif;">
+          <div style="
+            font-weight: 600; 
+            color: ${color}; 
+            margin-bottom: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          ">
+            <div style="
+              width: 26px;
+              height: 26px;
+              background: ${color};
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border: 2px solid white;
+            ">${sireneIcon}</div>
+            ${sirene.nome}
           </div>
           <div style="
-            font-size: 13px; 
-            padding: 6px 12px; 
-            background: ${statusColor}; 
-            color: white; 
-            border-radius: 6px; 
-            display: inline-block;
-            font-weight: bold;
-            ${sirene.tocando ? 'animation: pulse 1s infinite;' : ''}
+            padding: 8px;
+            background: ${color}22;
+            border-left: 3px solid ${color};
+            margin-bottom: 8px;
+            border-radius: 4px;
           ">
-            ${statusText}
+            <div style="font-weight: 600; color: ${color};">${status}</div>
           </div>
-          <div style="font-size: 11px; color: #94a3b8; margin-top: 8px;">
-            ${sirene.localizacao}
+          <div style="font-size: 12px; color: #475569; line-height: 1.6;">
+            <div style="margin-bottom: 4px;">
+              <strong style="color: #1e293b;">Bairro:</strong> ${sirene.bairro || 'N/A'}
+            </div>
+            <div>
+              <strong style="color: #1e293b;">Localização:</strong> ${sirene.latitude.toFixed(4)}, ${sirene.longitude.toFixed(4)}
+            </div>
           </div>
         </div>
-      `;
-      
-      marker.bindPopup(popup);
-      marker.addTo(layerGroup);
-    });
-  };
+      `);
+    count++;
+  });
+  
+  console.log('✅ [SIRENES]', count, 'marcadores adicionados');
+  console.log('⏭️  [SIRENES]', skipped, 'sirenes filtradas (não tocando)');
+};
 
   const addPluviometrosLayer = (map, L, data) => {
-    if (!data.features) return;
-
+    console.log('💧 [PLUVIO] Adicionando', data.features?.length || 0, 'pluviômetros');
+    console.log('🔍 [PLUVIO] Filtro "apenas com chuva":', mostrarApenasChuva);
+    
     if (layerGroupsRef.current.pluviometros) {
       layerGroupsRef.current.pluviometros.clearLayers();
     }
     
     const layerGroup = L.layerGroup().addTo(map);
     layerGroupsRef.current.pluviometros = layerGroup;
-
-    data.features.forEach(feature => {
-      const coords = feature.geometry.coordinates;
+    
+    let count = 0;
+    let skipped = 0;
+    
+    data.features?.forEach(feature => {
       const props = feature.properties;
-      const m15 = parseFloat(props.data?.m15?.replace(',', '.')) || 0;
+      const coords = feature.geometry.coordinates;
       
-      if (mostrarApenasChuva && m15 <= 0) return;
+      // Converte para número e trata valores inválidos
+      const intensidade = parseFloat(props.chuva_15min) || 0;
       
-      const color = m15 > 10 ? '#dc2626' : m15 > 5 ? '#f59e0b' : m15 > 0 ? '#3b82f6' : '#94a3b8';
+      // ✅ FILTRO: Se marcado "apenas com chuva" E intensidade = 0
+      if (mostrarApenasChuva && intensidade === 0) {
+        skipped++;
+        return;
+      }
+      
+      // 🎨 CORES SEGUINDO LEGENDA OFICIAL
+      let color = '#22c55e'; // 🟢 Verde - Sem Chuva (0 mm/h)
+      let label = 'Sem Chuva';
+      
+      if (intensidade > 50.0) {
+        color = '#dc2626'; // 🔴 Vermelho - Muito Forte (>50,0mm/h)
+        label = 'Chuva Muito Forte';
+      } else if (intensidade >= 25.1) {
+        color = '#f97316'; // 🟠 Laranja - Forte (25,1 - 50,0mm/h)
+        label = 'Chuva Forte';
+      } else if (intensidade >= 5.1) {
+        color = '#eab308'; // 🟡 Amarelo - Moderada (5,1 - 25,0mm/h)
+        label = 'Chuva Moderada';
+      } else if (intensidade >= 0.2) {
+        color = '#3b82f6'; // 🔵 Azul - Fraca (0,2 - 5,0mm/h)
+        label = 'Chuva Fraca';
+      }
       
       const icon = L.divIcon({
-        html: `<div style="background-color: ${color}; width: 10px; height: 10px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.3);"></div>`,
+        html: `
+          <div style="
+            width: 20px;
+            height: 20px;
+            background: ${color};
+            border: 2px solid white;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+          "></div>
+        `,
         className: '',
-        iconSize: [10, 10]
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
       });
 
-      const marker = L.marker([coords[1], coords[0]], { icon });
-      
-      const popup = `
-        <div style="font-family: system-ui; min-width: 180px;">
-          <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: bold; color: #1e293b;">
-            💧 ${props.station?.name || 'Estação'}
-          </h3>
-          <div style="font-size: 12px; margin: 4px 0;">
-            <strong>Últimos 15 min:</strong> ${m15.toFixed(1)} mm
+      L.marker([coords[1], coords[0]], { icon }).addTo(layerGroup)
+        .bindPopup(`
+          <div style="min-width: 200px; font-family: 'Inter', sans-serif;">
+            <div style="
+              font-weight: 600; 
+              color: ${color}; 
+              margin-bottom: 8px;
+              font-size: 14px;
+            ">
+              💧 ${props.nome}
+            </div>
+            <div style="
+              padding: 8px;
+              background: ${color}22;
+              border-left: 3px solid ${color};
+              margin-bottom: 8px;
+              border-radius: 4px;
+            ">
+              <div style="font-weight: 600; color: ${color};">${label}</div>
+            </div>
+            <div style="font-size: 12px; color: #475569; line-height: 1.6;">
+              <div style="margin-bottom: 4px;">
+                <strong style="color: #1e293b;">15 min:</strong> ${intensidade.toFixed(1)} mm/h
+              </div>
+              <div style="margin-bottom: 4px;">
+                <strong style="color: #1e293b;">1 hora:</strong> ${(props.chuva_1h || 0).toFixed(1)} mm
+              </div>
+              <div>
+                <strong style="color: #1e293b;">24 horas:</strong> ${(props.chuva_24h || 0).toFixed(1)} mm
+              </div>
+            </div>
           </div>
-          <div style="font-size: 12px; margin: 4px 0;">
-            <strong>Últimas 24h:</strong> ${parseFloat(props.data?.h24?.replace(',', '.') || 0).toFixed(1)} mm
-          </div>
-        </div>
-      `;
-      
-      marker.bindPopup(popup);
-      marker.addTo(layerGroup);
+        `);
+      count++;
     });
+    
+    console.log('✅ [PLUVIO]', count, 'marcadores adicionados');
+    console.log('⏭️  [PLUVIO]', skipped, 'pluviômetros filtrados (sem chuva)');
   };
 
   const addTransitoLayer = (map, L, data) => {
-    if (!data.alerts) return;
-
-    if (layerGroupsRef.current.transito) {
-      layerGroupsRef.current.transito.clearLayers();
-    }
+  console.log('🚗 [WAZE] Adicionando', data.alerts?.length || 0, 'alertas');
+  console.log('🔍 [WAZE] Filtros ativos:', filtrosWaze);
+  
+  if (layerGroupsRef.current.transito) {
+    layerGroupsRef.current.transito.clearLayers();
+  }
+  
+  const layerGroup = L.layerGroup().addTo(map);
+  layerGroupsRef.current.transito = layerGroup;
+  
+  // TRADUÇÃO dos tipos
+  const traducaoTipos = {
+    'ACCIDENT': 'Acidente',
+    'JAM': 'Congestionamento',
+    'ROAD_CLOSED': 'Via Fechada',
+    'HAZARD': 'Perigo na Via',
+    'WEATHERHAZARD': 'Alerta Climático',
+    'CONSTRUCTION': 'Obra',
+    'POLICE': 'Blitz Policial'
+  };
+  
+  // TRADUÇÃO dos subtipos
+  const traducaoSubtipos = {
+    'STAND_STILL_TRAFFIC': 'Trânsito Parado',
+    'HEAVY_TRAFFIC': 'Trânsito Pesado',
+    'MODERATE_TRAFFIC': 'Trânsito Moderado',
+    'LIGHT_TRAFFIC': 'Trânsito Leve',
+    'POTHOLE': 'Buraco na Pista',
+    'POT_HOLE': 'Buraco na Pista',
+    'CONSTRUCTION': 'Obra na Via',
+    'CAR_STOPPED': 'Carro Parado',
+    'VEHICLE_STOPPED': 'Veículo Parado',
+    'TRAFFIC_LIGHT_FAULT': 'Semáforo com Defeito',
+    'HAZARD_ON_ROAD': 'Obstáculo na Pista',
+    'HAZARD_ON_SHOULDER': 'Obstáculo no Acostamento',
+    'ACCIDENT_MINOR': 'Acidente Leve',
+    'ACCIDENT_MAJOR': 'Acidente Grave'
+  };
+  
+  // SVGs INTUITIVOS E ESPECÍFICOS
+  const iconSVG = {
+    // ACIDENTE - Colisão com X
+    'ACCIDENT': `<svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+      <path d="M15.5 1h-8l-7 7v8l7 7h8l7-7v-8l-7-7zm-1.5 14h-4v-4h4v4zm0-6h-4V5h4v4z"/>
+      <path d="M7 7l10 10M17 7L7 17" stroke="white" stroke-width="2"/>
+    </svg>`,
     
-    const layerGroup = L.layerGroup().addTo(map);
-    layerGroupsRef.current.transito = layerGroup;
-
-    const deveMostrarAlerta = (alert) => {
-      switch(alert.subtype) {
-        case 'HAZARD_ON_ROAD_POT_HOLE':
-          return filtrosWaze.buracos;
-        case 'HAZARD_ON_ROAD_CONSTRUCTION':
-          return filtrosWaze.obras;
-        case 'JAM_STAND_STILL_TRAFFIC':
-          return filtrosWaze.transito_parado;
-        case 'JAM_HEAVY_TRAFFIC':
-          return filtrosWaze.transito_lento;
-        case 'HAZARD_ON_SHOULDER_CAR_STOPPED':
-        case 'HAZARD_ON_ROAD_CAR_STOPPED':
-          return filtrosWaze.carros_parados;
-        case 'HAZARD_ON_ROAD_TRAFFIC_LIGHT_FAULT':
-          return filtrosWaze.semaforo;
-        case 'ROAD_CLOSED_EVENT':
-          return filtrosWaze.eventos;
-        default:
-          if (alert.type === 'ACCIDENT') return filtrosWaze.acidentes;
-          if (alert.type === 'ROAD_CLOSED') return filtrosWaze.via_fechada;
-          return true;
-      }
-    };
-
-    data.alerts.forEach(alert => {
-      if (!alert.location) return;
-      
-      if (!deveMostrarAlerta(alert)) return;
-      
-      const coords = alert.location;
-      let iconHtml = '';
-      let cor = '';
-      let titulo = '';
-      
-      switch(alert.subtype) {
-        case 'HAZARD_ON_ROAD_POT_HOLE':
-        case 'HAZARD_ON_ROAD':
-        case 'HAZARD_ON_ROAD_OBJECT':
-          cor = '#FDB913';
-          titulo = 'Perigo';
-          iconHtml = `
-            <div style="width: 40px; height: 40px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.3);">
-              <div style="width: 34px; height: 34px; border-radius: 50%; background: ${cor}; display: flex; align-items: center; justify-content: center;">
-                <svg width="22" height="22" viewBox="0 0 24 24">
-                  <path d="M12 2L2 20h20L12 2z" fill="#1a1a1a" stroke="#1a1a1a" stroke-width="1.5"/>
-                  <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="bold" fill="${cor}">!</text>
-                </svg>
-              </div>
-            </div>
-          `;
-          break;
-          
-        case 'HAZARD_ON_ROAD_CONSTRUCTION':
-        case 'ROAD_CLOSED':
-          cor = '#FF9F1C';
-          titulo = 'Obras';
-          iconHtml = `
-            <div style="width: 40px; height: 40px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.3);">
-              <div style="width: 34px; height: 34px; border-radius: 50%; background: ${cor}; display: flex; align-items: center; justify-content: center; padding-top: 2px;">
-                <svg width="18" height="20" viewBox="0 0 24 24">
-                  <path d="M12 3L6 21h12L12 3z" fill="white" stroke="white" stroke-width="0.5"/>
-                  <rect x="5.5" y="20" width="13" height="2" rx="1" fill="white"/>
-                  <line x1="8" y1="15" x2="16" y2="15" stroke="${cor}" stroke-width="2"/>
-                  <line x1="9" y1="10" x2="15" y2="10" stroke="${cor}" stroke-width="2"/>
-                </svg>
-              </div>
-            </div>
-          `;
-          break;
-          
-        case 'JAM_STAND_STILL_TRAFFIC':
-        case 'JAM_HEAVY_TRAFFIC':
-        case 'HAZARD_ON_SHOULDER_CAR_STOPPED':
-        case 'HAZARD_ON_ROAD_CAR_STOPPED':
-          cor = '#FF4444';
-          titulo = alert.subtype?.includes('JAM') ? 'Congestionamento' : 'Carro Parado';
-          iconHtml = `
-            <div style="width: 40px; height: 40px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.3);">
-              <div style="width: 34px; height: 34px; border-radius: 50%; background: ${cor}; display: flex; align-items: center; justify-content: center; position: relative;">
-                <svg width="22" height="22" viewBox="0 0 24 24">
-                  <g transform="translate(0, -2)">
-                    <rect x="6" y="8" width="12" height="7" rx="2" fill="white"/>
-                    <rect x="7" y="9" width="3" height="2" fill="${cor}"/>
-                    <rect x="14" y="9" width="3" height="2" fill="${cor}"/>
-                    <circle cx="8.5" cy="16" r="1.5" fill="#333"/>
-                    <circle cx="15.5" cy="16" r="1.5" fill="#333"/>
-                  </g>
-                  <g transform="translate(0, 4)">
-                    <rect x="6" y="8" width="12" height="7" rx="2" fill="white"/>
-                    <rect x="7" y="9" width="3" height="2" fill="${cor}"/>
-                    <rect x="14" y="9" width="3" height="2" fill="${cor}"/>
-                    <circle cx="8.5" cy="16" r="1.5" fill="#333"/>
-                    <circle cx="15.5" cy="16" r="1.5" fill="#333"/>
-                  </g>
-                </svg>
-              </div>
-            </div>
-          `;
-          break;
-          
-        case 'ROAD_CLOSED_EVENT':
-          cor = '#A855F7';
-          titulo = 'Evento';
-          iconHtml = `
-            <div style="width: 40px; height: 40px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.3);">
-              <div style="width: 34px; height: 34px; border-radius: 50%; background: ${cor}; display: flex; align-items: center; justify-content: center;">
-                <svg width="18" height="18" viewBox="0 0 24 24">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="white"/>
-                </svg>
-              </div>
-            </div>
-          `;
-          break;
-          
-        case 'HAZARD_ON_ROAD_TRAFFIC_LIGHT_FAULT':
-          cor = '#FF4444';
-          titulo = 'Semáforo';
-          iconHtml = `
-            <div style="width: 40px; height: 40px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.3);">
-              <div style="width: 34px; height: 34px; border-radius: 50%; background: ${cor}; display: flex; align-items: center; justify-content: center;">
-                <svg width="16" height="20" viewBox="0 0 16 20">
-                  <rect x="2" y="0" width="12" height="20" rx="2" fill="white"/>
-                  <rect x="3" y="1" width="10" height="6" rx="1" fill="${cor}"/>
-                  <rect x="3" y="7" width="10" height="6" rx="1" fill="white"/>
-                  <rect x="3" y="13" width="10" height="6" rx="1" fill="white"/>
-                </svg>
-              </div>
-            </div>
-          `;
-          break;
-          
-        default:
-          switch(alert.type) {
-            case 'ACCIDENT':
-              cor = '#CBD5E1';
-              titulo = 'Acidente';
-              iconHtml = `
-                <div style="width: 40px; height: 40px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.3);">
-                  <div style="width: 34px; height: 34px; border-radius: 50%; background: ${cor}; display: flex; align-items: center; justify-content: center;">
-                    <svg width="24" height="24" viewBox="0 0 24 24">
-                      <circle cx="12" cy="12" r="8" fill="#FF9F1C" opacity="0.3"/>
-                      <path d="M8 8 L16 16 M16 8 L8 16" stroke="#FF4444" stroke-width="3" stroke-linecap="round"/>
-                    </svg>
-                  </div>
-                </div>
-              `;
-              break;
-            case 'JAM':
-              cor = '#FF4444';
-              titulo = 'Congestionamento';
-              iconHtml = `
-                <div style="width: 40px; height: 40px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.3);">
-                  <div style="width: 34px; height: 34px; border-radius: 50%; background: ${cor}; display: flex; align-items: center; justify-content: center;">
-                    <svg width="22" height="22" viewBox="0 0 24 24">
-                      <rect x="6" y="6" width="12" height="7" rx="2" fill="white"/>
-                      <circle cx="8.5" cy="14" r="1.5" fill="#333"/>
-                      <circle cx="15.5" cy="14" r="1.5" fill="#333"/>
-                    </svg>
-                  </div>
-                </div>
-              `;
-              break;
-            case 'HAZARD':
-              cor = '#FDB913';
-              titulo = 'Perigo';
-              iconHtml = `
-                <div style="width: 40px; height: 40px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.3);">
-                  <div style="width: 34px; height: 34px; border-radius: 50%; background: ${cor}; display: flex; align-items: center; justify-content: center;">
-                    <svg width="22" height="22" viewBox="0 0 24 24">
-                      <path d="M12 2L2 20h20L12 2z" fill="#1a1a1a" stroke="#1a1a1a" stroke-width="1.5"/>
-                      <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="bold" fill="${cor}">!</text>
-                    </svg>
-                  </div>
-                </div>
-              `;
-              break;
-            default:
-              cor = '#94A3B8';
-              titulo = 'Alerta';
-              iconHtml = `
-                <div style="width: 40px; height: 40px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.3);">
-                  <div style="width: 34px; height: 34px; border-radius: 50%; background: ${cor}; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: bold;">!</div>
-                </div>
-              `;
-          }
-      }
-      
-      const icon = L.divIcon({
-        html: iconHtml,
-        className: '',
-        iconSize: [40, 40],
-        iconAnchor: [20, 20]
-      });
-
-      const marker = L.marker([coords.y, coords.x], { icon });
-      
-      const popup = `
-        <div style="font-family: system-ui; min-width: 200px;">
-          <h3 style="margin: 0 0 8px 0; font-size: 15px; font-weight: bold; color: #1e293b;">
-            ${titulo}
-          </h3>
-          <div style="font-size: 13px; color: #475569; margin-bottom: 6px;">
-            📍 ${alert.street || 'Via não identificada'}
-          </div>
-          <div style="font-size: 12px; color: #64748b;">
-            ${alert.city || 'Rio de Janeiro'}
-          </div>
-        </div>
-      `;
-      
-      marker.bindPopup(popup);
-      marker.addTo(layerGroup);
-    });
+    // CONGESTIONAMENTO - Múltiplos carros enfileirados
+    'JAM': `<svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+      <path d="M3 18v-1c0-.55.45-1 1-1h1v-3c0-.55.45-1 1-1h10c.55 0 1 .45 1 1v3h1c.55 0 1 .45 1 1v1h-16z"/>
+      <rect x="5" y="8" width="3" height="3" rx="1"/>
+      <rect x="10" y="8" width="3" height="3" rx="1"/>
+      <path d="M20 13v-1c0-.55.45-1 1-1h1v-3c0-.55.45-1 1-1h10c.55 0 1 .45 1 1v3h1c.55 0 1 .45 1 1v1h-16z" transform="scale(0.5) translate(8, 0)"/>
+    </svg>`,
+    
+    // VIA FECHADA - Barreira de trânsito
+    'ROAD_CLOSED': `<svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+      <rect x="2" y="11" width="20" height="2" fill="white"/>
+      <rect x="3" y="8" width="2" height="8" fill="white"/>
+      <rect x="19" y="8" width="2" height="8" fill="white"/>
+      <path d="M4 10l4-4 4 4 4-4 4 4" stroke="white" stroke-width="2" fill="none"/>
+    </svg>`,
+    
+    // CARRO PARADO - Carro com sinal de parada
+    'CAR_STOPPED': `<svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+      <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+      <circle cx="12" cy="9" r="2" fill="#ef4444"/>
+    </svg>`,
+    
+    // BURACO - Cratera na pista
+    'POTHOLE': `<svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+      <ellipse cx="12" cy="14" rx="8" ry="4" fill="white" opacity="0.5"/>
+      <path d="M8 12c0-2 1-4 4-4s4 2 4 4c0 1-1 2-2 3-1 1-2 1-2 0-1-1-4-1-4-3z" fill="white"/>
+    </svg>`,
+    
+    // OBRA - Cone de trânsito
+    'CONSTRUCTION': `<svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+      <path d="M12 2L6 18h12L12 2z" stroke="white" stroke-width="1.5" fill="none"/>
+      <rect x="5" y="18" width="14" height="2" fill="white"/>
+      <line x1="8" y1="12" x2="16" y2="12" stroke="#f97316" stroke-width="2"/>
+      <line x1="9" y1="8" x2="15" y2="8" stroke="#f97316" stroke-width="2"/>
+    </svg>`,
+    
+    // SEMÁFORO - Semáforo com X
+    'TRAFFIC_LIGHT': `<svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+      <rect x="8" y="2" width="8" height="18" rx="2" fill="white"/>
+      <circle cx="12" cy="7" r="2" fill="#ef4444"/>
+      <circle cx="12" cy="12" r="2" fill="#eab308"/>
+      <circle cx="12" cy="17" r="2" fill="#64748b"/>
+      <line x1="10" y1="5" x2="14" y2="9" stroke="#ef4444" stroke-width="1.5"/>
+      <line x1="14" y1="5" x2="10" y2="9" stroke="#ef4444" stroke-width="1.5"/>
+    </svg>`,
+    
+    // CLIMA - Nuvem com raio
+    'WEATHERHAZARD': `<svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+      <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/>
+      <path d="M11 13h2l-3 5 1-3H9l3-5-1 3z" fill="#fbbf24"/>
+    </svg>`,
+    
+    // BLITZ - Viatura policial com sirene
+    'POLICE': `<svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+      <rect x="6" y="10" width="12" height="7" rx="1" fill="white"/>
+      <rect x="8" y="8" width="8" height="2" fill="white"/>
+      <circle cx="9" cy="15" r="1.5" fill="#1e293b"/>
+      <circle cx="15" cy="15" r="1.5" fill="#1e293b"/>
+      <rect x="10" y="5" width="4" height="3" rx="0.5" fill="#ef4444"/>
+      <circle cx="12" cy="6" r="1" fill="#fbbf24" opacity="0.8"/>
+    </svg>`,
+    
+    // GENÉRICO - Triângulo de alerta
+    'HAZARD': `<svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+      <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+    </svg>`
+  };
+  
+  // Mapeamento de cores
+  const colorMap = {
+    'ACCIDENT': '#ef4444',
+    'JAM': '#f97316',
+    'ROAD_CLOSED': '#dc2626',
+    'HAZARD': '#eab308',
+    'WEATHERHAZARD': '#06b6d4',
+    'CONSTRUCTION': '#f97316',
+    'POLICE': '#3b82f6',
+    'CAR_STOPPED': '#eab308',
+    'POTHOLE': '#eab308',
+    'TRAFFIC_LIGHT': '#ef4444'
   };
 
-  const toggleLayer = (layerName) => {
-    setLayers(prev => {
-      const newState = { ...prev, [layerName]: !prev[layerName] };
-      
-      if (layerGroupsRef.current[layerName]) {
-        const map = mapInstanceRef.current;
-        if (newState[layerName]) {
-          if (layerName === 'sirenes') {
-            fetch('/api/sirenes')
-              .then(r => r.json())
-              .then(data => addSirenesLayer(map, window.L, data));
-          } else if (layerName === 'pluviometros') {
-            fetch('/api/pluviometria')
-              .then(r => r.json())
-              .then(data => addPluviometrosLayer(map, window.L, data));
-          } else {
-            layerGroupsRef.current[layerName].addTo(map);
+  let count = 0;
+  let skippedCount = 0;
+  const tiposEncontrados = new Set();
+  const subtiposEncontrados = new Set();
+  
+  data.alerts?.forEach(alert => {
+    const tipo = alert.type || 'HAZARD';
+    const subtipo = alert.subtype || '';
+    
+    tiposEncontrados.add(tipo);
+    if (subtipo) subtiposEncontrados.add(`${tipo}:${subtipo}`);
+    
+    let mostrar = false;
+    let usarIcone = tipo;
+    let cor = colorMap[tipo] || '#64748b';
+    
+    // ACIDENTES
+    if (tipo === 'ACCIDENT' && filtrosWaze.acidentes) {
+      mostrar = true;
+    }
+    
+    // JAM (TRÂNSITO) - com animação
+    if (tipo === 'JAM') {
+      // Trânsito parado - VERMELHO PISCANDO
+      if (subtipo.includes('STAND_STILL') && filtrosWaze.transito_parado) {
+        mostrar = true;
+        cor = '#dc2626';
+      }
+      // Trânsito lento - LARANJA PISCANDO
+      else if ((subtipo.includes('HEAVY') || subtipo.includes('MODERATE') || 
+                subtipo.includes('LIGHT')) && filtrosWaze.transito_lento) {
+        mostrar = true;
+        cor = '#f97316';
+      }
+      // Sem subtipo
+      else if (!subtipo && (filtrosWaze.transito_parado || filtrosWaze.transito_lento)) {
+        mostrar = true;
+      }
+    }
+    
+    // VIA FECHADA
+    if (tipo === 'ROAD_CLOSED' && filtrosWaze.via_fechada) {
+      mostrar = true;
+    }
+    
+    // HAZARD (PERIGOS)
+    if (tipo === 'HAZARD') {
+      // Buracos
+      if ((subtipo.includes('POTHOLE') || subtipo.includes('POT_HOLE')) && filtrosWaze.buracos) {
+        mostrar = true;
+        usarIcone = 'POTHOLE';
+        cor = '#eab308';
+      }
+      // Obras
+      else if (subtipo.includes('CONSTRUCTION') && filtrosWaze.obras) {
+        mostrar = true;
+        usarIcone = 'CONSTRUCTION';
+        cor = '#f97316';
+      }
+      // Carros parados - ÍCONE ESPECÍFICO
+      else if ((subtipo.includes('CAR_STOPPED') || subtipo.includes('VEHICLE_STOPPED')) && 
+               filtrosWaze.carros_parados) {
+        mostrar = true;
+        usarIcone = 'CAR_STOPPED';
+        cor = '#eab308';
+      }
+      // Semáforos - ÍCONE ESPECÍFICO
+      else if ((subtipo.includes('TRAFFIC_LIGHT') || subtipo.includes('SIGNAL')) && 
+               filtrosWaze.semaforo) {
+        mostrar = true;
+        usarIcone = 'TRAFFIC_LIGHT';
+        cor = '#ef4444';
+      }
+      // Genérico
+      else if (!subtipo && (filtrosWaze.buracos || filtrosWaze.obras || filtrosWaze.carros_parados)) {
+        mostrar = true;
+      }
+    }
+    
+    // WEATHERHAZARD (Perigos climáticos)
+    if (tipo === 'WEATHERHAZARD' && filtrosWaze.eventos) {
+      mostrar = true;
+    }
+    
+    // CONSTRUCTION (Obras)
+    if (tipo === 'CONSTRUCTION' && filtrosWaze.obras) {
+      mostrar = true;
+    }
+    
+    // POLICE (Blitz)
+    if (tipo === 'POLICE' && filtrosWaze.eventos) {
+      mostrar = true;
+    }
+    
+    if (!mostrar) {
+      skippedCount++;
+      return;
+    }
+    
+    // Determinar se precisa animação de pulsação
+    const precisaPulsar = (tipo === 'JAM' && 
+      (subtipo.includes('STAND_STILL') || subtipo.includes('HEAVY') || 
+       subtipo.includes('MODERATE')));
+    
+    const animacao = precisaPulsar ? `
+      <style>
+        @keyframes pulse-traffic {
+          0%, 100% { 
+            opacity: 1; 
+            transform: scale(1);
+            box-shadow: 0 0 20px ${cor}, 0 0 40px ${cor};
           }
-        } else {
-          map.removeLayer(layerGroupsRef.current[layerName]);
+          50% { 
+            opacity: 0.7; 
+            transform: scale(1.15);
+            box-shadow: 0 0 30px ${cor}, 0 0 60px ${cor};
+          }
+        }
+      </style>
+    ` : '';
+    
+    const icon = L.divIcon({
+      html: `
+        ${animacao}
+        <div style="
+          width: 34px;
+          height: 34px;
+          background: ${cor};
+          border: 3px solid white;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+          ${precisaPulsar ? 'animation: pulse-traffic 1.5s infinite;' : ''}
+        ">${iconSVG[usarIcone] || iconSVG['HAZARD']}</div>
+      `,
+      className: '',
+      iconSize: [34, 34],
+      iconAnchor: [17, 17]
+    });
+
+    // Traduzir subtipo
+    let subtipoTraduzido = subtipo;
+    for (const [chave, valor] of Object.entries(traducaoSubtipos)) {
+      if (subtipo.includes(chave)) {
+        subtipoTraduzido = valor;
+        break;
+      }
+    }
+
+    const coords = alert.location;
+    L.marker([coords.y, coords.x], { icon }).addTo(layerGroup)
+      .bindPopup(`
+        <div style="min-width: 220px; font-family: 'Inter', sans-serif;">
+          <div style="
+            font-weight: 600; 
+            color: ${cor}; 
+            margin-bottom: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          ">
+            <div style="
+              width: 26px;
+              height: 26px;
+              background: ${cor};
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border: 2px solid white;
+            ">${iconSVG[usarIcone]}</div>
+            ${traducaoTipos[tipo] || tipo}
+          </div>
+          <div style="font-size: 12px; color: #475569; line-height: 1.6;">
+            <div style="margin-bottom: 4px;">
+              <strong style="color: #1e293b;">Local:</strong> ${alert.street || 'Não informado'}
+            </div>
+            ${subtipo ? `
+            <div style="margin-bottom: 4px;">
+              <strong style="color: #1e293b;">Tipo:</strong> ${subtipoTraduzido}
+            </div>
+            ` : ''}
+            <div>
+              <strong style="color: #1e293b;">Confiança:</strong> ${alert.confidence || 0}/10
+            </div>
+          </div>
+        </div>
+      `);
+    count++;
+  });
+  
+  console.log('✅ [WAZE]', count, 'marcadores adicionados');
+  console.log('⏭️  [WAZE]', skippedCount, 'alertas filtrados (não exibidos)');
+  console.log('📊 [WAZE] Tipos encontrados:', Array.from(tiposEncontrados).join(', '));
+  console.log('📊 [WAZE] Subtipos encontrados:', Array.from(subtiposEncontrados).join(', '));
+};
+
+  const toggleLayer = (layerName) => {
+    console.log('🔄 [LAYER] Toggle:', layerName);
+    const newLayers = { ...layers, [layerName]: !layers[layerName] };
+    setLayers(newLayers);
+    
+    if (mapInstanceRef.current) {
+      const L = window.L;
+      
+      if (newLayers[layerName]) {
+        console.log('➕ [LAYER] Ativando:', layerName);
+        if (layerName === 'sirenes') {
+          fetch('/api/sirenes')
+            .then(r => r.json())
+            .then(data => addSirenesLayer(mapInstanceRef.current, L, data));
+        }
+        else if (layerName === 'pluviometros') {
+          fetch('/api/pluviometria')
+            .then(r => r.json())
+            .then(data => addPluviometrosLayer(mapInstanceRef.current, L, data));
+        }
+        else if (layerName === 'transito') {
+          fetch('/api/waze/filtrado')
+            .then(r => r.json())
+            .then(data => addTransitoLayer(mapInstanceRef.current, L, data));
+        }
+      } else {
+        console.log('➖ [LAYER] Desativando:', layerName);
+        if (layerGroupsRef.current[layerName]) {
+          layerGroupsRef.current[layerName].clearLayers();
         }
       }
-      
-      return newState;
-    });
+    }
   };
 
   const toggleFiltroWaze = (filtro) => {
-    setFiltrosWaze(prev => {
-      const newState = { ...prev, [filtro]: !prev[filtro] };
-      
-      if (mapInstanceRef.current && layers.transito) {
-        fetch('/api/waze/filtrado')
-          .then(r => r.json())
-          .then(data => {
-            addTransitoLayer(mapInstanceRef.current, window.L, data);
-          });
-      }
-      
-      return newState;
-    });
+    console.log('🔄 [FILTRO] Toggle Waze:', filtro);
+    setFiltrosWaze(prev => ({
+      ...prev,
+      [filtro]: !prev[filtro]
+    }));
   };
 
+  if (loading) {
+    return (
+      <div style={{
+        width: '100%',
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#0f172a',
+        color: 'white'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: '50px',
+            height: '50px',
+            border: '4px solid rgba(6, 182, 212, 0.3)',
+            borderTop: '4px solid #06b6d4',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 16px'
+          }}></div>
+          <div>Carregando mapa...</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="relative">
-      {loading && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/90 backdrop-blur-sm rounded-2xl">
-          <div className="text-center">
-            <div className="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-slate-300">Carregando mapa...</p>
+    <div style={{
+      width: '100%',
+      height: '100vh',
+      display: 'flex',
+      overflow: 'hidden',
+      backgroundColor: '#0f172a',
+      position: 'relative'
+    }}>
+      {/* PAINEL LATERAL */}
+      <div style={{
+        width: painelAberto ? `${SIDEBAR_WIDTH}px` : '0px',
+        height: '100%',
+        backgroundColor: '#1e293b',
+        borderRight: painelAberto ? '1px solid rgba(6, 182, 212, 0.3)' : 'none',
+        transition: 'width 0.3s ease',
+        overflow: 'hidden',
+        position: 'relative',
+        zIndex: 1000,
+        flexShrink: 0
+      }}>
+        <div style={{ 
+          width: `${SIDEBAR_WIDTH}px`,
+          height: '100%',
+          overflowY: 'auto',
+          overflowX: 'hidden'
+        }}>
+          <div style={{
+            padding: '20px',
+            borderBottom: '1px solid rgba(6, 182, 212, 0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            backgroundColor: '#1e293b'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <Layers size={24} style={{ color: '#06b6d4' }} />
+              <h2 style={{ 
+                margin: 0, 
+                fontSize: '18px', 
+                fontWeight: 600,
+                color: 'white'
+              }}>
+                Controles do Mapa
+              </h2>
+            </div>
+            <button
+              onClick={() => setPainelAberto(false)}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#94a3b8',
+                cursor: 'pointer',
+                padding: '4px'
+              }}
+            >
+              <X size={20} />
+            </button>
+          </div>
+
+          <div style={{ padding: '20px' }}>
+            <div style={{
+              backgroundColor: 'rgba(30, 41, 59, 0.5)',
+              border: '1px solid rgba(6, 182, 212, 0.3)',
+              borderRadius: '12px',
+              padding: '16px',
+              marginBottom: '20px'
+            }}>
+              <h3 style={{ 
+                color: 'white', 
+                fontWeight: 600, 
+                fontSize: '14px', 
+                marginBottom: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <Layers size={16} style={{ color: '#06b6d4' }} />
+                Camadas
+              </h3>
+              
+              <button
+                onClick={() => toggleLayer('sirenes')}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  border: layers.sirenes ? '1px solid #ef4444' : '1px solid rgba(71, 85, 105, 0.5)',
+                  backgroundColor: layers.sirenes ? 'rgba(239, 68, 68, 0.2)' : 'rgba(51, 65, 85, 0.3)',
+                  color: layers.sirenes ? '#fca5a5' : '#94a3b8',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  boxShadow: layers.sirenes ? '0 4px 20px rgba(239, 68, 68, 0.2)' : 'none',
+                  marginBottom: '8px'
+                }}
+              >
+                <Radio size={16} />
+                <div style={{ flex: 1, textAlign: 'left' }}>
+                  <div style={{ fontWeight: 500, fontSize: '14px' }}>Sirenes</div>
+                  <div style={{ fontSize: '12px', opacity: 0.75 }}>{stats.sirenes} disponíveis</div>
+                </div>
+              </button>
+
+              <button
+                onClick={() => toggleLayer('pluviometros')}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  border: layers.pluviometros ? '1px solid #3b82f6' : '1px solid rgba(71, 85, 105, 0.5)',
+                  backgroundColor: layers.pluviometros ? 'rgba(59, 130, 246, 0.2)' : 'rgba(51, 65, 85, 0.3)',
+                  color: layers.pluviometros ? '#93c5fd' : '#94a3b8',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  boxShadow: layers.pluviometros ? '0 4px 20px rgba(59, 130, 246, 0.2)' : 'none',
+                  marginBottom: '8px'
+                }}
+              >
+                <Droplets size={16} />
+                <div style={{ flex: 1, textAlign: 'left' }}>
+                  <div style={{ fontWeight: 500, fontSize: '14px' }}>Pluviômetros</div>
+                  <div style={{ fontSize: '12px', opacity: 0.75 }}>{stats.pluviometros} disponíveis</div>
+                </div>
+              </button>
+
+              <button
+                onClick={() => toggleLayer('transito')}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  border: layers.transito ? '1px solid #eab308' : '1px solid rgba(71, 85, 105, 0.5)',
+                  backgroundColor: layers.transito ? 'rgba(234, 179, 8, 0.2)' : 'rgba(51, 65, 85, 0.3)',
+                  color: layers.transito ? '#fde047' : '#94a3b8',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  boxShadow: layers.transito ? '0 4px 20px rgba(234, 179, 8, 0.2)' : 'none'
+                }}
+              >
+                <Car size={16} />
+                <div style={{ flex: 1, textAlign: 'left' }}>
+                  <div style={{ fontWeight: 500, fontSize: '14px' }}>Trânsito Waze</div>
+                  <div style={{ fontSize: '12px', opacity: 0.75 }}>{stats.transito} alertas</div>
+                </div>
+              </button>
+            </div>
+
+            {layers.sirenes && (
+              <div style={{
+                backgroundColor: 'rgba(30, 41, 59, 0.5)',
+                border: '1px solid rgba(6, 182, 212, 0.3)',
+                borderRadius: '12px',
+                padding: '16px',
+                marginBottom: '16px'
+              }}>
+                <h3 style={{ color: 'white', fontWeight: 600, fontSize: '14px', marginBottom: '8px' }}>
+                  🚨 Filtros de Sirenes
+                </h3>
+                <label htmlFor="filtro-sirenes" style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontSize: '14px',
+                  color: '#cbd5e1',
+                  cursor: 'pointer'
+                }}>
+                  <input
+                    id="filtro-sirenes"
+                    type="checkbox"
+                    checked={mostrarApenasSirenesAtivas}
+                    onChange={(e) => {
+                      setMostrarApenasSirenesAtivas(e.target.checked);
+                      if (mapInstanceRef.current) {
+                        fetch('/api/sirenes')
+                          .then(r => r.json())
+                          .then(data => addSirenesLayer(mapInstanceRef.current, window.L, data));
+                      }
+                    }}
+                    style={{ width: '16px', height: '16px' }}
+                  />
+                  Mostrar apenas tocando
+                </label>
+              </div>
+            )}
+
+            {layers.pluviometros && (
+              <div style={{
+                backgroundColor: 'rgba(30, 41, 59, 0.5)',
+                border: '1px solid rgba(6, 182, 212, 0.3)',
+                borderRadius: '12px',
+                padding: '16px',
+                marginBottom: '16px'
+              }}>
+                <h3 style={{ color: 'white', fontWeight: 600, fontSize: '14px', marginBottom: '8px' }}>
+                  💧 Filtros de Chuva
+                </h3>
+                <label htmlFor="filtro-chuva" style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontSize: '14px',
+                  color: '#cbd5e1',
+                  cursor: 'pointer'
+                }}>
+                  <input
+                    id="filtro-chuva"
+                    type="checkbox"
+                    checked={mostrarApenasChuva}
+                    onChange={(e) => {
+                      setMostrarApenasChuva(e.target.checked);
+                      if (mapInstanceRef.current) {
+                        fetch('/api/pluviometria')
+                          .then(r => r.json())
+                          .then(data => addPluviometrosLayer(mapInstanceRef.current, window.L, data));
+                      }
+                    }}
+                    style={{ width: '16px', height: '16px' }}
+                  />
+                  Mostrar apenas com chuva
+                </label>
+              </div>
+            )}
+          
+            {layers.transito && (
+              <div style={{
+                backgroundColor: 'rgba(30, 41, 59, 0.5)',
+                border: '1px solid rgba(6, 182, 212, 0.3)',
+                borderRadius: '12px',
+    padding: '16px',
+    marginBottom: '16px'
+  }}>
+    <div style={{ 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'space-between', 
+      marginBottom: '12px' 
+    }}>
+      <h3 style={{ 
+        color: 'white', 
+        fontWeight: 600, 
+        fontSize: '14px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px'
+      }}>
+        <AlertCircle size={16} style={{ color: '#06b6d4' }} />
+        Filtros Waze
+      </h3>
+      <button
+        onClick={() => {
+          const todosAtivos = Object.values(filtrosWaze).every(v => v);
+          setFiltrosWaze({
+            acidentes: !todosAtivos,
+            transito_parado: !todosAtivos,
+            transito_lento: !todosAtivos,
+            via_fechada: !todosAtivos,
+            carros_parados: !todosAtivos,
+            obras: !todosAtivos,
+            buracos: !todosAtivos,
+            semaforo: !todosAtivos,
+            eventos: !todosAtivos
+          });
+        }}
+        style={{
+          padding: '4px 8px',
+          backgroundColor: 'rgba(51, 65, 85, 0.5)',
+          border: 'none',
+          borderRadius: '4px',
+          fontSize: '12px',
+          color: '#cbd5e1',
+          cursor: 'pointer'
+        }}
+      >
+        {Object.values(filtrosWaze).every(v => v) ? 'Desmarcar' : 'Marcar'} Todos
+      </button>
+    </div>
+    
+    <div style={{ 
+      display: 'grid', 
+      gridTemplateColumns: 'repeat(2, 1fr)', 
+      gap: '8px' 
+    }}>
+      <button
+        onClick={() => toggleFiltroWaze('acidentes')}
+        style={{
+          padding: '10px',
+          borderRadius: '8px',
+          border: filtrosWaze.acidentes ? '2px solid #ef4444' : '1px solid rgba(71, 85, 105, 0.5)',
+          backgroundColor: filtrosWaze.acidentes ? 'rgba(239, 68, 68, 0.15)' : 'rgba(51, 65, 85, 0.3)',
+          color: filtrosWaze.acidentes ? '#ef4444' : '#64748b',
+          fontSize: '13px',
+          fontWeight: 500,
+          cursor: 'pointer',
+          transition: 'all 0.2s',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px'
+        }}
+      >
+        <span>💥</span> Acidentes
+      </button>
+
+      <button
+        onClick={() => toggleFiltroWaze('transito_parado')}
+        style={{
+          padding: '10px',
+          borderRadius: '8px',
+          border: filtrosWaze.transito_parado ? '2px solid #dc2626' : '1px solid rgba(71, 85, 105, 0.5)',
+          backgroundColor: filtrosWaze.transito_parado ? 'rgba(220, 38, 38, 0.15)' : 'rgba(51, 65, 85, 0.3)',
+          color: filtrosWaze.transito_parado ? '#dc2626' : '#64748b',
+          fontSize: '13px',
+          fontWeight: 500,
+          cursor: 'pointer',
+          transition: 'all 0.2s',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px'
+        }}
+      >
+        <span>🚗</span> Parado
+      </button>
+
+      <button
+        onClick={() => toggleFiltroWaze('transito_lento')}
+        style={{
+          padding: '10px',
+          borderRadius: '8px',
+          border: filtrosWaze.transito_lento ? '2px solid #f97316' : '1px solid rgba(71, 85, 105, 0.5)',
+          backgroundColor: filtrosWaze.transito_lento ? 'rgba(249, 115, 22, 0.15)' : 'rgba(51, 65, 85, 0.3)',
+          color: filtrosWaze.transito_lento ? '#f97316' : '#64748b',
+          fontSize: '13px',
+          fontWeight: 500,
+          cursor: 'pointer',
+          transition: 'all 0.2s',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px'
+        }}
+      >
+        <span>🐌</span> Lento
+      </button>
+
+      <button
+        onClick={() => toggleFiltroWaze('via_fechada')}
+        style={{
+          padding: '10px',
+          borderRadius: '8px',
+          border: filtrosWaze.via_fechada ? '2px solid #dc2626' : '1px solid rgba(71, 85, 105, 0.5)',
+          backgroundColor: filtrosWaze.via_fechada ? 'rgba(220, 38, 38, 0.15)' : 'rgba(51, 65, 85, 0.3)',
+          color: filtrosWaze.via_fechada ? '#dc2626' : '#64748b',
+          fontSize: '13px',
+          fontWeight: 500,
+          cursor: 'pointer',
+          transition: 'all 0.2s',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px'
+        }}
+      >
+        <span>⛔</span> Via Fechada
+      </button>
+
+      <button
+        onClick={() => toggleFiltroWaze('carros_parados')}
+        style={{
+          padding: '10px',
+          borderRadius: '8px',
+          border: filtrosWaze.carros_parados ? '2px solid #eab308' : '1px solid rgba(71, 85, 105, 0.5)',
+          backgroundColor: filtrosWaze.carros_parados ? 'rgba(234, 179, 8, 0.15)' : 'rgba(51, 65, 85, 0.3)',
+          color: filtrosWaze.carros_parados ? '#eab308' : '#64748b',
+          fontSize: '13px',
+          fontWeight: 500,
+          cursor: 'pointer',
+          transition: 'all 0.2s',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px'
+        }}
+      >
+        <span>🚙</span> Carro Parado
+      </button>
+
+      <button
+        onClick={() => toggleFiltroWaze('obras')}
+        style={{
+          padding: '10px',
+          borderRadius: '8px',
+          border: filtrosWaze.obras ? '2px solid #f97316' : '1px solid rgba(71, 85, 105, 0.5)',
+          backgroundColor: filtrosWaze.obras ? 'rgba(249, 115, 22, 0.15)' : 'rgba(51, 65, 85, 0.3)',
+          color: filtrosWaze.obras ? '#f97316' : '#64748b',
+          fontSize: '13px',
+          fontWeight: 500,
+          cursor: 'pointer',
+          transition: 'all 0.2s',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px'
+        }}
+      >
+        <span>🚧</span> Obras
+      </button>
+
+      <button
+        onClick={() => toggleFiltroWaze('buracos')}
+        style={{
+          padding: '10px',
+          borderRadius: '8px',
+          border: filtrosWaze.buracos ? '2px solid #eab308' : '1px solid rgba(71, 85, 105, 0.5)',
+          backgroundColor: filtrosWaze.buracos ? 'rgba(234, 179, 8, 0.15)' : 'rgba(51, 65, 85, 0.3)',
+          color: filtrosWaze.buracos ? '#eab308' : '#64748b',
+          fontSize: '13px',
+          fontWeight: 500,
+          cursor: 'pointer',
+          transition: 'all 0.2s',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px'
+        }}
+      >
+        <span>🕳️</span> Buracos
+      </button>
+
+      <button
+        onClick={() => toggleFiltroWaze('semaforo')}
+        style={{
+          padding: '10px',
+          borderRadius: '8px',
+          border: filtrosWaze.semaforo ? '2px solid #ef4444' : '1px solid rgba(71, 85, 105, 0.5)',
+          backgroundColor: filtrosWaze.semaforo ? 'rgba(239, 68, 68, 0.15)' : 'rgba(51, 65, 85, 0.3)',
+          color: filtrosWaze.semaforo ? '#ef4444' : '#64748b',
+          fontSize: '13px',
+          fontWeight: 500,
+          cursor: 'pointer',
+          transition: 'all 0.2s',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px'
+        }}
+      >
+        <span>🚦</span> Semáforo
+      </button>
+
+      <button
+        onClick={() => toggleFiltroWaze('eventos')}
+        style={{
+          padding: '10px',
+          borderRadius: '8px',
+          border: filtrosWaze.eventos ? '2px solid #3b82f6' : '1px solid rgba(71, 85, 105, 0.5)',
+          backgroundColor: filtrosWaze.eventos ? 'rgba(59, 130, 246, 0.15)' : 'rgba(51, 65, 85, 0.3)',
+          color: filtrosWaze.eventos ? '#3b82f6' : '#64748b',
+          fontSize: '13px',
+          fontWeight: 500,
+          cursor: 'pointer',
+          transition: 'all 0.2s',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px'
+        }}
+      >
+        <span>🚓</span> Eventos
+      </button>
+    </div>
+  </div>
+)}
           </div>
         </div>
+      </div>
+
+      {/* BOTÃO PARA ABRIR PAINEL */}
+      {!painelAberto && (
+        <button
+          onClick={() => setPainelAberto(true)}
+          style={{
+            position: 'absolute',
+            left: '10px',
+            top: '10px',
+            zIndex: 1001,
+            backgroundColor: '#1e293b',
+            border: '1px solid rgba(6, 182, 212, 0.3)',
+            borderRadius: '8px',
+            padding: '10px',
+            color: '#06b6d4',
+            cursor: 'pointer',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
+          }}
+        >
+          <Menu size={20} />
+        </button>
       )}
 
-      <div className="grid grid-cols-3 gap-4 mb-4">
-        <div className="bg-slate-800/50 border border-green-500/30 rounded-xl p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Radio className="w-5 h-5 text-green-400" />
-            <span className="text-slate-300 font-semibold">Sirenes</span>
-          </div>
-          <div className="text-2xl font-bold text-white">{stats.sirenes}</div>
-        </div>
-
-        <div className="bg-slate-800/50 border border-blue-500/30 rounded-xl p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Droplets className="w-5 h-5 text-blue-400" />
-            <span className="text-slate-300 font-semibold">Pluviômetros</span>
-          </div>
-          <div className="text-2xl font-bold text-white">{stats.pluviometros}</div>
-        </div>
-
-        <div className="bg-slate-800/50 border border-orange-500/30 rounded-xl p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Car className="w-5 h-5 text-orange-400" />
-            <span className="text-slate-300 font-semibold">Alertas</span>
-          </div>
-          <div className="text-2xl font-bold text-white">{stats.transito}</div>
-        </div>
-      </div>
-
-      <div className="bg-slate-800/50 border border-purple-500/30 rounded-xl p-4 mb-4">
-        <div className="flex items-center gap-2 mb-3">
-          <Layers className="w-5 h-5 text-purple-400" />
-          <span className="text-white font-semibold">Controle de Camadas</span>
-        </div>
-        <div className="grid grid-cols-3 gap-3">
-          <button
-            onClick={() => toggleLayer('sirenes')}
-            className={`flex items-center gap-2 px-4 py-3 rounded-lg transition-all ${
-              layers.sirenes
-                ? 'bg-green-500/20 border-2 border-green-500 text-green-300'
-                : 'bg-slate-700/50 border-2 border-slate-600 text-slate-400'
-            }`}
-          >
-            <Radio className="w-4 h-4" />
-            <span className="text-sm font-medium">Sirenes</span>
-          </button>
-
-          <button
-            onClick={() => toggleLayer('pluviometros')}
-            className={`flex items-center gap-2 px-4 py-3 rounded-lg transition-all ${
-              layers.pluviometros
-                ? 'bg-blue-500/20 border-2 border-blue-500 text-blue-300'
-                : 'bg-slate-700/50 border-2 border-slate-600 text-slate-400'
-            }`}
-          >
-            <Droplets className="w-4 h-4" />
-            <span className="text-sm font-medium">Pluviômetros</span>
-          </button>
-
-          <button
-            onClick={() => toggleLayer('transito')}
-            className={`flex items-center gap-2 px-4 py-3 rounded-lg transition-all ${
-              layers.transito
-                ? 'bg-orange-500/20 border-2 border-orange-500 text-orange-300'
-                : 'bg-slate-700/50 border-2 border-slate-600 text-slate-400'
-            }`}
-          >
-            <Car className="w-4 h-4" />
-            <span className="text-sm font-medium">Alertas</span>
-          </button>
-        </div>
-
-        <div className="mt-3 pt-3 border-t border-slate-600">
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={() => {
-                setMostrarApenasSirenesAtivas(!mostrarApenasSirenesAtivas);
-                if (mapInstanceRef.current && layers.sirenes) {
-                  fetch('/api/sirenes')
-                    .then(r => r.json())
-                    .then(data => addSirenesLayer(mapInstanceRef.current, window.L, data));
-                }
-              }}
-              className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
-                mostrarApenasSirenesAtivas
-                  ? 'bg-slate-700/50 border border-slate-600 text-slate-400'
-                  : 'bg-green-500/20 border border-green-500 text-green-300'
-              }`}
-            >
-              {mostrarApenasSirenesAtivas ? '🔴 Apenas Ativas' : '✅ Todas Sirenes'}
-            </button>
-            
-            <button
-              onClick={() => {
-                setMostrarApenasChuva(!mostrarApenasChuva);
-                if (mapInstanceRef.current && layers.pluviometros) {
-                  fetch('/api/pluviometria')
-                    .then(r => r.json())
-                    .then(data => addPluviometrosLayer(mapInstanceRef.current, window.L, data));
-                }
-              }}
-              className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
-                mostrarApenasChuva
-                  ? 'bg-slate-700/50 border border-slate-600 text-slate-400'
-                  : 'bg-blue-500/20 border border-blue-500 text-blue-300'
-              }`}
-            >
-              {mostrarApenasChuva ? '💧 Apenas Chuva' : '✅ Todos Pluviômetros'}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {layers.transito && (
-        <div className="bg-slate-800/50 border border-orange-500/30 rounded-xl p-4 mb-4">
-          <div className="flex items-center gap-2 mb-3">
-            <Car className="w-5 h-5 text-orange-400" />
-            <span className="text-white font-semibold">Filtros de Alertas Waze</span>
-          </div>
-          <div className="grid grid-cols-3 gap-2">
-            <button
-              onClick={() => toggleFiltroWaze('buracos')}
-              className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
-                filtrosWaze.buracos
-                  ? 'bg-yellow-500/20 border border-yellow-500 text-yellow-300'
-                  : 'bg-slate-700/50 border border-slate-600 text-slate-400'
-              }`}
-            >
-              🕳️ Buracos
-            </button>
-            <button
-              onClick={() => toggleFiltroWaze('obras')}
-              className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
-                filtrosWaze.obras
-                  ? 'bg-orange-500/20 border border-orange-500 text-orange-300'
-                  : 'bg-slate-700/50 border border-slate-600 text-slate-400'
-              }`}
-            >
-              🚧 Obras
-            </button>
-            <button
-              onClick={() => toggleFiltroWaze('transito_parado')}
-              className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
-                filtrosWaze.transito_parado
-                  ? 'bg-red-500/20 border border-red-500 text-red-300'
-                  : 'bg-slate-700/50 border border-slate-600 text-slate-400'
-              }`}
-            >
-              🚗 Parado
-            </button>
-            <button
-              onClick={() => toggleFiltroWaze('transito_lento')}
-              className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
-                filtrosWaze.transito_lento
-                  ? 'bg-orange-500/20 border border-orange-500 text-orange-300'
-                  : 'bg-slate-700/50 border border-slate-600 text-slate-400'
-              }`}
-            >
-              🐌 Lento
-            </button>
-            <button
-              onClick={() => toggleFiltroWaze('carros_parados')}
-              className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
-                filtrosWaze.carros_parados
-                  ? 'bg-blue-500/20 border border-blue-500 text-blue-300'
-                  : 'bg-slate-700/50 border border-slate-600 text-slate-400'
-              }`}
-            >
-              🚙 Carro Parado
-            </button>
-            <button
-              onClick={() => toggleFiltroWaze('semaforo')}
-              className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
-                filtrosWaze.semaforo
-                  ? 'bg-red-500/20 border border-red-500 text-red-300'
-                  : 'bg-slate-700/50 border border-slate-600 text-slate-400'
-              }`}
-            >
-              🚦 Semáforo
-            </button>
-            <button
-              onClick={() => toggleFiltroWaze('eventos')}
-              className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
-                filtrosWaze.eventos
-                  ? 'bg-purple-500/20 border border-purple-500 text-purple-300'
-                  : 'bg-slate-700/50 border border-slate-600 text-slate-400'
-              }`}
-            >
-              🎪 Eventos
-            </button>
-            <button
-              onClick={() => toggleFiltroWaze('acidentes')}
-              className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
-                filtrosWaze.acidentes
-                  ? 'bg-gray-500/20 border border-gray-500 text-gray-300'
-                  : 'bg-slate-700/50 border border-slate-600 text-slate-400'
-              }`}
-            >
-              💥 Acidentes
-            </button>
-            <button
-              onClick={() => toggleFiltroWaze('via_fechada')}
-              className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
-                filtrosWaze.via_fechada
-                  ? 'bg-orange-500/20 border border-orange-500 text-orange-300'
-                  : 'bg-slate-700/50 border border-slate-600 text-slate-400'
-              }`}
-            >
-              ⛔ Via Fechada
-            </button>
-          </div>
-        </div>
-      )}
-
-      <div className="bg-slate-800/50 border border-cyan-500/30 rounded-xl p-4 mb-4">
-        <div className="flex items-center gap-2 mb-3">
-          <Layers className="w-5 h-5 text-cyan-400" />
-          <span className="text-white font-semibold">Legenda</span>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-            <span className="text-slate-300">Sirene Online</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-            <span className="text-slate-300">Sirene Alerta</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-            <span className="text-slate-300">Chuva</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-            <span className="text-slate-300">Congestionamento</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-slate-800/30 border border-cyan-500/30 rounded-2xl overflow-hidden">
+      {/* CONTAINER DO MAPA */}
+      <div style={{
+        flex: 1,
+        height: '100%',
+        minWidth: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: '#0f172a',
+        padding: `0 ${MARGIN_RIGHT}px ${MARGIN_BOTTOM}px 0`
+      }}>
         <div 
-          ref={mapRef} 
-          style={{ height: '600px', width: '100%' }}
-          className="z-0"
-        ></div>
+          ref={mapRef}
+          id="leaflet-map-container"
+          style={{ 
+            width: '100%', 
+            height: '100%',
+            borderRadius: '8px',
+            overflow: 'hidden',
+            backgroundColor: '#1e293b',
+            position: 'relative'
+          }}
+        />
       </div>
+
+      <style>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };

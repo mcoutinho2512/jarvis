@@ -155,11 +155,86 @@ app.get('/api/sirenes', async (req, res) => {
 });
 
 app.get('/api/pluviometria', async (req, res) => {
+
+// Nova rota para o Dashboard de Pluviômetros (formato GeoJSON)
+app.get('/api/pluviometros', async (req, res) => {
+  try {
+    console.log('☁️ Buscando dados de pluviômetros...');
+    const response = await fetch('https://websempre.rio.rj.gov.br/json/dados_pluviometricos');
+    const data = await response.json();
+    console.log(`✅ ${data.features?.length || 0} pluviômetros carregados`);
+    res.json(data);
+  } catch (error) {
+    console.error('❌ Erro ao buscar pluviômetros:', error.message);
+    res.status(500).json({ error: 'Erro ao buscar dados', features: [] });
+  }
+});
   try {
     const response = await fetch('https://websempre.rio.rj.gov.br/json/dados_pluviometricos');
     const data = await response.json();
     res.json(data);
   } catch (error) {
+    res.status(500).json({ error: 'Erro ao buscar dados' });
+  }
+});
+
+// Nova rota para o Dashboard de Pluviômetros (formato GeoJSON)
+app.get('/api/pluviometros', async (req, res) => {
+  try {
+    console.log('☁️ Buscando dados de pluviômetros...');
+    const response = await fetch('https://websempre.rio.rj.gov.br/json/dados_pluviometricos');
+    const data = await response.json();
+    
+    // A API já retorna no formato GeoJSON correto
+    console.log(`✅ ${data.features?.length || 0} pluviômetros carregados`);
+    res.json(data);
+  } catch (error) {
+    console.error('❌ Erro ao buscar pluviômetros:', error.message);
+    res.status(500).json({ 
+      error: 'Erro ao buscar dados',
+      features: [] // Retorna vazio em caso de erro
+    });
+  }
+});
+
+// ✅ NOVO - Rota para buscar limite municipal
+app.get('/api/limite-municipal', async (req, res) => {
+  try {
+    console.log('🗺️ Buscando limite municipal...');
+    const response = await fetch('https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Cartografia/Limites_administrativos/MapServer/0/query?where=1=1&outFields=*&outSR=4326&f=json&returnGeometry=true');
+    const data = await response.json();
+    console.log(`✅ Limite municipal carregado`);
+    res.json(data);
+  } catch (error) {
+    console.error('❌ Erro ao buscar limite municipal:', error.message);
+    res.status(500).json({ error: 'Erro ao buscar dados' });
+  }
+});
+
+// ✅ NOVO - Rota para buscar bairros
+app.get('/api/bairros', async (req, res) => {
+  try {
+    console.log('🏘️ Buscando bairros...');
+    const response = await fetch('https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Cartografia/Limites_administrativos/MapServer/4/query?where=1=1&outFields=*&outSR=4326&f=json&returnGeometry=true');
+    const data = await response.json();
+    console.log(`✅ ${data.features?.length || 0} bairros carregados`);
+    res.json(data);
+  } catch (error) {
+    console.error('❌ Erro ao buscar bairros:', error.message);
+    res.status(500).json({ error: 'Erro ao buscar dados' });
+  }
+});
+
+// ✅ NOVO - Rota para buscar sirenes do ArcGIS (alternativa)
+app.get('/api/sirenes-arcgis', async (req, res) => {
+  try {
+    console.log('📡 Buscando sirenes do ArcGIS...');
+    const response = await fetch('https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Defesa_Civil/Defesa_Civil/MapServer/0/query?where=1=1&outFields=*&outSR=4326&f=json&returnGeometry=true');
+    const data = await response.json();
+    console.log(`✅ ${data.features?.length || 0} sirenes ArcGIS carregadas`);
+    res.json(data);
+  } catch (error) {
+    console.error('❌ Erro ao buscar sirenes ArcGIS:', error.message);
     res.status(500).json({ error: 'Erro ao buscar dados' });
   }
 });

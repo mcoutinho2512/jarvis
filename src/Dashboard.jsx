@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Activity, Radio, AlertTriangle, CheckCircle, XCircle, MapPin, Clock, TrendingUp } from 'lucide-react';
+import { Activity, Radio, AlertTriangle, CheckCircle, XCircle, MapPin, Clock, TrendingUp, Cloud, Droplets } from 'lucide-react';
+// ✅ NOVOS IMPORTS - Sistema de Pluviômetros
+import PluviometrosCard from './components/PluviometrosCard';
+import AlertsContainer, { usePluviometrosAlerts } from './components/AlertsContainer';
 
 const Dashboard = () => {
   const [sirenes, setSirenes] = useState([]);
@@ -12,10 +15,30 @@ const Dashboard = () => {
     tocando: 0
   });
 
+  // ✅ NOVO - Estado dos pluviômetros
+  const [pluvioStats, setPluvioStats] = useState({
+    total: 0,
+    emAlerta: 0,
+    maiorNome: null,
+    maiorValor: 0,
+    categoria: 'Sem Chuva',
+    cor: '#22c55e'
+  });
+
+  // ✅ NOVO - Ativa sistema de alertas de chuva
+  usePluviometrosAlerts();
+
   // Buscar dados das sirenes
   useEffect(() => {
     fetchSirenes();
     const interval = setInterval(fetchSirenes, 30000); // Atualiza a cada 30s
+    return () => clearInterval(interval);
+  }, []);
+
+  // ✅ NOVO - Buscar dados dos pluviômetros
+  useEffect(() => {
+    fetchPluviometros();
+    const interval = setInterval(fetchPluviometros, 120000); // Atualiza a cada 2min
     return () => clearInterval(interval);
   }, []);
 
@@ -62,6 +85,59 @@ const Dashboard = () => {
       setStats({ total: 0, online: 0, offline: 0, tocando: 0 });
     } finally {
       setLoading(false);
+    }
+  };
+
+  // ✅ NOVO - Função para buscar e processar pluviômetros
+  const fetchPluviometros = async () => {
+    try {
+      const response = await fetch('/api/pluviometros');
+      const data = await response.json();
+      
+      if (data.features) {
+        const processed = data.features.map(feature => {
+          const m15 = parseFloat(feature.properties.data?.m15?.replace(',', '.')) || 0;
+          const name = feature.properties.station?.name || 'Estação desconhecida';
+          return { name, m15 };
+        });
+
+        // Encontrar o maior índice
+        const maior = processed.reduce((prev, current) => 
+          (prev.m15 > current.m15) ? prev : current
+        , { name: null, m15: 0 });
+
+        // Contar quantos estão em alerta (≥ 5.1 mm/h)
+        const emAlerta = processed.filter(p => p.m15 >= 5.1).length;
+
+        // Determinar categoria e cor
+        let categoria = 'Sem Chuva';
+        let cor = '#22c55e';
+        
+        if (maior.m15 >= 50) {
+          categoria = 'Chuva Muito Forte';
+          cor = '#dc2626';
+        } else if (maior.m15 >= 25.1) {
+          categoria = 'Chuva Forte';
+          cor = '#f97316';
+        } else if (maior.m15 >= 5.1) {
+          categoria = 'Chuva Moderada';
+          cor = '#eab308';
+        } else if (maior.m15 >= 0.2) {
+          categoria = 'Chuva Fraca';
+          cor = '#3b82f6';
+        }
+
+        setPluvioStats({
+          total: processed.length,
+          emAlerta,
+          maiorNome: maior.name,
+          maiorValor: maior.m15,
+          categoria,
+          cor
+        });
+      }
+    } catch (error) {
+      console.error('Erro ao buscar pluviômetros:', error);
     }
   };
 
@@ -133,22 +209,29 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6">
+      {/* ✅ NOVO - Container de Pop-ups de Alerta */}
+      <AlertsContainer />
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold text-white mb-2">Dashboard de Monitoramento</h2>
-          <p className="text-slate-400">Sistema de Sirenes - Defesa Civil Rio</p>
+          <p className="text-slate-400">Sistema de Sirenes e Pluviômetros - Defesa Civil Rio</p>
         </div>
         <button
-          onClick={fetchSirenes}
+          onClick={() => {
+            fetchSirenes();
+            fetchPluviometros();
+          }}
           className="bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/50 text-cyan-300 px-4 py-2 rounded-lg transition-all"
         >
           <Activity className="w-5 h-5" />
         </button>
       </div>
 
-      {/* Estatísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* Estatísticas - EXPANDIDO COM 6 CARDS */}
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+        {/* Card 1 - Total de Sirenes */}
         <div className="bg-slate-800/50 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6">
           <div className="flex items-center justify-between mb-2">
             <Radio className="w-8 h-8 text-cyan-400" />
@@ -157,6 +240,7 @@ const Dashboard = () => {
           <p className="text-slate-400 text-sm">Total de Sirenes</p>
         </div>
 
+        {/* Card 2 - Online */}
         <div className="bg-slate-800/50 backdrop-blur-xl border border-green-500/30 rounded-xl p-6">
           <div className="flex items-center justify-between mb-2">
             <CheckCircle className="w-8 h-8 text-green-400" />
@@ -165,6 +249,7 @@ const Dashboard = () => {
           <p className="text-slate-400 text-sm">Online</p>
         </div>
 
+        {/* Card 3 - Offline */}
         <div className="bg-slate-800/50 backdrop-blur-xl border border-gray-500/30 rounded-xl p-6">
           <div className="flex items-center justify-between mb-2">
             <XCircle className="w-8 h-8 text-gray-400" />
@@ -173,12 +258,70 @@ const Dashboard = () => {
           <p className="text-slate-400 text-sm">Offline</p>
         </div>
 
+        {/* Card 4 - Tocando */}
         <div className="bg-slate-800/50 backdrop-blur-xl border border-red-500/30 rounded-xl p-6">
           <div className="flex items-center justify-between mb-2">
             <AlertTriangle className="w-8 h-8 text-red-400" />
             <span className="text-3xl font-bold text-white">{stats.tocando}</span>
           </div>
           <p className="text-slate-400 text-sm">Tocando</p>
+        </div>
+
+        {/* ✅ NOVO - Card 5 - Total Pluviômetros + Maior Índice */}
+        <div className="bg-slate-800/50 backdrop-blur-xl border border-blue-500/30 rounded-xl p-6">
+          <div className="flex items-center justify-between mb-2">
+            <Cloud className="w-8 h-8 text-blue-400" />
+            <span className="text-3xl font-bold text-white">{pluvioStats.total}</span>
+          </div>
+          <p className="text-slate-400 text-sm">Pluviômetros</p>
+          {pluvioStats.maiorValor > 0 && (
+            <div className="mt-3 pt-3 border-t border-slate-700">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-slate-400">Maior:</span>
+                <span 
+                  className="text-lg font-bold"
+                  style={{ color: pluvioStats.cor }}
+                >
+                  {pluvioStats.maiorValor.toFixed(1)}
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mt-1 truncate">
+                {pluvioStats.maiorNome}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* ✅ NOVO - Card 6 - Alertas de Chuva Ativos */}
+        <div 
+          className={`bg-slate-800/50 backdrop-blur-xl border rounded-xl p-6 ${
+            pluvioStats.emAlerta > 0 
+              ? 'border-orange-500/50 animate-pulse' 
+              : 'border-slate-700/30'
+          }`}
+        >
+          <div className="flex items-center justify-between mb-2">
+            <Droplets 
+              className={`w-8 h-8 ${
+                pluvioStats.emAlerta > 0 ? 'text-orange-400' : 'text-slate-600'
+              }`} 
+            />
+            <span 
+              className={`text-3xl font-bold ${
+                pluvioStats.emAlerta > 0 ? 'text-orange-400' : 'text-white'
+              }`}
+            >
+              {pluvioStats.emAlerta}
+            </span>
+          </div>
+          <p className="text-slate-400 text-sm">Em Alerta</p>
+          {pluvioStats.emAlerta > 0 && (
+            <div className="mt-3 pt-3 border-t border-orange-500/30">
+              <p className="text-xs text-orange-300 font-semibold">
+                {pluvioStats.categoria}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -194,6 +337,19 @@ const Dashboard = () => {
           </div>
         </div>
       )}
+
+      {/* ✅ Card de Pluviômetros */}
+      <div className="bg-slate-800/30 backdrop-blur-xl border border-cyan-500/30 rounded-2xl overflow-hidden">
+        <div className="bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border-b border-cyan-500/30 p-4">
+          <h3 className="text-xl font-bold text-white flex items-center gap-2">
+            <TrendingUp className="w-6 h-6 text-cyan-400" />
+            Monitoramento de Chuva
+          </h3>
+        </div>
+        <div className="p-4">
+          <PluviometrosCard />
+        </div>
+      </div>
 
       {/* Lista de Sirenes */}
       <div className="bg-slate-800/30 backdrop-blur-xl border border-cyan-500/30 rounded-2xl overflow-hidden">
