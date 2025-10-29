@@ -16,7 +16,9 @@ const Map = () => {
     sirenes: false,
     pluviometros: false,
     transito: true,
-    logradouros: false
+    bairros: false,
+    logradouros: false,
+    radar: false
   });
   
   const [stats, setStats] = useState({
@@ -28,8 +30,14 @@ const Map = () => {
   const layerGroupsRef = useRef({
     sirenes: null,
     pluviometros: null,
-    transito: null
+    transito: null,
+    bairros: null,
+    logradouros: null
   });
+
+  // Refs para limites do município do Rio
+  const rioBoundsRef = useRef(null);
+  const rioPolygonsRef = useRef([]);
 
   const [filtrosWaze, setFiltrosWaze] = useState({
     buracos: false,
@@ -437,6 +445,54 @@ useEffect(() => {
       if (layers.transito) addTransitoLayer(map, L, waze);
       setStats(prev => ({ ...prev, transito: waze.alerts?.length || 0 }));
 
+      console.log('📡 [API] Buscando bairros...');
+      const bairros = await fetch('/api/bairros')
+        .then(r => {
+          console.log('📡 [API] Bairros - Status:', r.status);
+          return r.text();
+        })
+        .then(text => {
+          try {
+            // Remove aspas extras do JSON
+            const cleanText = text.startsWith('"') ? JSON.parse(text) : text;
+            return JSON.parse(cleanText);
+          } catch (e) {
+            console.error('❌ [API] Erro ao parsear bairros:', e);
+            return { features: [] };
+          }
+        })
+        .catch(err => {
+          console.error('❌ [API] Erro bairros:', err);
+          return { features: [] };
+        });
+      
+      console.log('📊 [BAIRROS]', bairros.features?.length || 0, 'bairros recebidos');
+      if (layers.bairros) addBairrosLayer(map, L, bairros);
+
+      console.log('📡 [API] Buscando logradouros...');
+      const logradouros = await fetch('/api/logradouros')
+        .then(r => {
+          console.log('📡 [API] Logradouros - Status:', r.status);
+          return r.text();
+        })
+        .then(text => {
+          try {
+            // Remove aspas extras do JSON
+            const cleanText = text.startsWith('"') ? JSON.parse(text) : text;
+            return JSON.parse(cleanText);
+          } catch (e) {
+            console.error('❌ [API] Erro ao parsear logradouros:', e);
+            return { features: [] };
+          }
+        })
+        .catch(err => {
+          console.error('❌ [API] Erro logradouros:', err);
+          return { features: [] };
+        });
+      
+      console.log('📊 [LOGRADOUROS]', logradouros.features?.length || 0, 'ruas recebidas');
+      if (layers.logradouros) addLogradourosLayer(map, L, logradouros);
+
     } catch (error) {
       console.error('❌ [API] Erro geral:', error);
     }
@@ -658,6 +714,156 @@ useEffect(() => {
     
     console.log('✅ [PLUVIO]', count, 'marcadores adicionados');
     console.log('⏭️  [PLUVIO]', skipped, 'pluviômetros filtrados (sem chuva)');
+  };
+
+  const addBairrosLayer = (map, L, data) => {
+    console.log('🗺️ [BAIRROS] Adicionando', data.features?.length || 0, 'bairros');
+    
+    if (layerGroupsRef.current.bairros) {
+      layerGroupsRef.current.bairros.clearLayers();
+    }
+    
+    const layerGroup = L.layerGroup().addTo(map);
+    layerGroupsRef.current.bairros = layerGroup;
+    
+    let count = 0;
+    const polygons = [];
+    const allBounds = [];
+    
+    data.features?.forEach(feature => {
+      const props = feature.attributes;
+      const rings = feature.geometry?.rings;
+      
+      if (!rings || rings.length === 0) return;
+      
+      // Converte formato ESRI para GeoJSON
+      const coordinates = rings.map(ring => 
+        ring.map(coord => [coord[1], coord[0]]) // [lng, lat] → [lat, lng]
+      );
+      
+      const polygon = L.polygon(coordinates, {
+        color: '#06b6d4',
+        weight: 2,
+        opacity: 0.8,
+        fillColor: '#06b6d4',
+        fillOpacity: 0.1
+      }).addTo(layerGroup);
+      
+      // Guarda polígono para verificação de ponto dentro
+      polygons.push(polygon);
+      
+      // Guarda bounds de cada bairro
+      allBounds.push(polygon.getBounds());
+      
+      polygon.bindPopup(`
+        <div style="min-width: 180px; font-family: 'Inter', sans-serif;">
+          <div style="
+            font-weight: 600; 
+            color: #06b6d4; 
+            margin-bottom: 8px;
+            font-size: 14px;
+          ">
+            🗺️ ${props.nome || 'Bairro'}
+          </div>
+          <div style="font-size: 12px; color: #475569; line-height: 1.6;">
+            <div style="margin-bottom: 4px;">
+              <strong style="color: #1e293b;">Região:</strong> ${props.regiao_adm || 'N/A'}
+            </div>
+            <div>
+              <strong style="color: #1e293b;">Código:</strong> ${props.codbairro || 'N/A'}
+            </div>
+          </div>
+        </div>
+      `);
+      
+      count++;
+    });
+    
+    // Salva polígonos para filtro do Waze
+    rioPolygonsRef.current = polygons;
+    
+    // Calcula bounds geral do município
+    if (allBounds.length > 0) {
+      const featureGroup = L.featureGroup(polygons);
+      rioBoundsRef.current = featureGroup.getBounds();
+      console.log('📍 [RIO] Bounds calculados:', rioBoundsRef.current);
+    }
+    
+    console.log('✅ [BAIRROS]', count, 'polígonos adicionados');
+  };
+
+  const addLogradourosLayer = (map, L, data) => {
+    console.log('🛣️ [LOGRADOUROS] Adicionando', data.features?.length || 0, 'ruas');
+    
+    if (layerGroupsRef.current.logradouros) {
+      layerGroupsRef.current.logradouros.clearLayers();
+    }
+    
+    const layerGroup = L.layerGroup().addTo(map);
+    layerGroupsRef.current.logradouros = layerGroup;
+    
+    let count = 0;
+    
+    data.features?.forEach(feature => {
+      const props = feature.attributes;
+      const paths = feature.geometry?.paths;
+      
+      if (!paths || paths.length === 0) return;
+      
+      // Converte formato ESRI para GeoJSON
+      const coordinates = paths.map(path => 
+        path.map(coord => [coord[1], coord[0]]) // [lng, lat] → [lat, lng]
+      );
+      
+      const polyline = L.polyline(coordinates, {
+        color: '#94a3b8',
+        weight: 1,
+        opacity: 0.6
+      }).addTo(layerGroup);
+      
+      polyline.bindPopup(`
+        <div style="min-width: 180px; font-family: 'Inter', sans-serif;">
+          <div style="
+            font-weight: 600; 
+            color: #94a3b8; 
+            margin-bottom: 8px;
+            font-size: 14px;
+          ">
+            🛣️ ${props.completo || props.nome_mapa || 'Logradouro'}
+          </div>
+          <div style="font-size: 12px; color: #475569; line-height: 1.6;">
+            <div>
+              <strong style="color: #1e293b;">Bairro:</strong> ${props.bairro || 'N/A'}
+            </div>
+          </div>
+        </div>
+      `);
+      
+      count++;
+    });
+    
+    console.log('✅ [LOGRADOUROS]', count, 'ruas adicionadas');
+  };
+
+  // Função helper para verificar se um ponto está dentro de um polígono (Ray Casting)
+  const isPointInPolygon = (point, polygon) => {
+    let inside = false;
+    const x = point.lat;
+    const y = point.lng;
+    
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      const xi = polygon[i].lat;
+      const yi = polygon[i].lng;
+      const xj = polygon[j].lat;
+      const yj = polygon[j].lng;
+      
+      const intersect = ((yi > y) !== (yj > y)) &&
+        (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+      
+      if (intersect) inside = !inside;
+    }
+    
+    return inside;
   };
 
   const addTransitoLayer = (map, L, data) => {
@@ -889,6 +1095,30 @@ useEffect(() => {
       return;
     }
     
+    // FILTRO GEOGRÁFICO: Verificar se está dentro do município do Rio
+    const coords = alert.location;
+    if (rioPolygonsRef.current.length > 0) {
+      const latLng = L.latLng(coords.y, coords.x);
+      let dentroDoRio = false;
+      
+      // Verifica se o ponto está dentro de algum polígono de bairro
+      for (const polygon of rioPolygonsRef.current) {
+        if (polygon.getBounds().contains(latLng)) {
+          // Verificação mais precisa usando ray casting
+          const latlngs = polygon.getLatLngs()[0]; // Primeiro anel do polígono
+          if (isPointInPolygon(latLng, latlngs)) {
+            dentroDoRio = true;
+            break;
+          }
+        }
+      }
+      
+      if (!dentroDoRio) {
+        skippedCount++;
+        return;
+      }
+    }
+    
     // Determinar se precisa animação de pulsação
     const precisaPulsar = (tipo === 'JAM' && 
       (subtipo.includes('STAND_STILL') || subtipo.includes('HEAVY') || 
@@ -941,7 +1171,6 @@ useEffect(() => {
       }
     }
 
-    const coords = alert.location;
     L.marker([coords.y, coords.x], { icon }).addTo(layerGroup)
       .bindPopup(`
         <div style="min-width: 220px; font-family: 'Inter', sans-serif;">
@@ -990,6 +1219,30 @@ useEffect(() => {
   console.log('📊 [WAZE] Subtipos encontrados:', Array.from(subtiposEncontrados).join(', '));
 };
 
+  // Função para centralizar o mapa no município do Rio
+  const centralizarNoRio = () => {
+    if (mapInstanceRef.current && rioBoundsRef.current) {
+      console.log('📍 [RIO] Centralizando no município');
+      mapInstanceRef.current.fitBounds(rioBoundsRef.current, {
+        padding: [50, 50],
+        maxZoom: 11
+      });
+    } else if (mapInstanceRef.current && !rioBoundsRef.current) {
+      // Se não tem bounds, ativa a camada de bairros primeiro
+      console.log('📍 [RIO] Ativando bairros para calcular bounds...');
+      toggleLayer('bairros');
+      // Aguarda um pouco e tenta novamente
+      setTimeout(() => {
+        if (rioBoundsRef.current) {
+          mapInstanceRef.current.fitBounds(rioBoundsRef.current, {
+            padding: [50, 50],
+            maxZoom: 11
+          });
+        }
+      }, 1000);
+    }
+  };
+
   const toggleLayer = (layerName) => {
     console.log('🔄 [LAYER] Toggle:', layerName);
     const newLayers = { ...layers, [layerName]: !layers[layerName] };
@@ -1014,6 +1267,26 @@ useEffect(() => {
           fetch('/api/waze/filtrado')
             .then(r => r.json())
             .then(data => addTransitoLayer(mapInstanceRef.current, L, data));
+        }
+        else if (layerName === 'bairros') {
+          fetch('/api/bairros')
+            .then(r => r.text())
+            .then(text => {
+              const cleanText = text.startsWith('"') ? JSON.parse(text) : text;
+              return JSON.parse(cleanText);
+            })
+            .then(data => addBairrosLayer(mapInstanceRef.current, L, data))
+            .catch(err => console.error('❌ [BAIRROS] Erro:', err));
+        }
+        else if (layerName === 'logradouros') {
+          fetch('/api/logradouros')
+            .then(r => r.text())
+            .then(text => {
+              const cleanText = text.startsWith('"') ? JSON.parse(text) : text;
+              return JSON.parse(cleanText);
+            })
+            .then(data => addLogradourosLayer(mapInstanceRef.current, L, data))
+            .catch(err => console.error('❌ [LOGRADOUROS] Erro:', err));
         }
       } else {
         console.log('➖ [LAYER] Desativando:', layerName);
@@ -1204,13 +1477,101 @@ useEffect(() => {
                   color: layers.transito ? '#fde047' : '#94a3b8',
                   cursor: 'pointer',
                   transition: 'all 0.2s',
-                  boxShadow: layers.transito ? '0 4px 20px rgba(234, 179, 8, 0.2)' : 'none'
+                  boxShadow: layers.transito ? '0 4px 20px rgba(234, 179, 8, 0.2)' : 'none',
+                  marginBottom: '8px'
                 }}
               >
                 <Car size={16} />
                 <div style={{ flex: 1, textAlign: 'left' }}>
                   <div style={{ fontWeight: 500, fontSize: '14px' }}>Trânsito Waze</div>
                   <div style={{ fontSize: '12px', opacity: 0.75 }}>{stats.transito} alertas</div>
+                </div>
+              </button>
+
+              <button
+                onClick={() => toggleLayer('bairros')}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  border: layers.bairros ? '1px solid #8b5cf6' : '1px solid rgba(71, 85, 105, 0.5)',
+                  backgroundColor: layers.bairros ? 'rgba(139, 92, 246, 0.2)' : 'rgba(51, 65, 85, 0.3)',
+                  color: layers.bairros ? '#c4b5fd' : '#94a3b8',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  boxShadow: layers.bairros ? '0 4px 20px rgba(139, 92, 246, 0.2)' : 'none',
+                  marginBottom: '8px'
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+                <div style={{ flex: 1, textAlign: 'left' }}>
+                  <div style={{ fontWeight: 500, fontSize: '14px' }}>Limites dos Bairros</div>
+                  <div style={{ fontSize: '12px', opacity: 0.75 }}>Rio de Janeiro</div>
+                </div>
+              </button>
+
+              <button
+                onClick={() => toggleLayer('logradouros')}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  border: layers.logradouros ? '1px solid #64748b' : '1px solid rgba(71, 85, 105, 0.5)',
+                  backgroundColor: layers.logradouros ? 'rgba(100, 116, 139, 0.2)' : 'rgba(51, 65, 85, 0.3)',
+                  color: layers.logradouros ? '#94a3b8' : '#64748b',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  boxShadow: layers.logradouros ? '0 4px 20px rgba(100, 116, 139, 0.2)' : 'none',
+                  marginBottom: '8px'
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M3 3v18h18"/>
+                  <path d="M18 17V9"/>
+                  <path d="M13 17V5"/>
+                  <path d="M8 17v-3"/>
+                </svg>
+                <div style={{ flex: 1, textAlign: 'left' }}>
+                  <div style={{ fontWeight: 500, fontSize: '14px' }}>Logradouros</div>
+                  <div style={{ fontSize: '12px', opacity: 0.75 }}>Ruas da cidade</div>
+                </div>
+              </button>
+
+              <button
+                onClick={() => toggleLayer('radar')}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  border: layers.radar ? '1px solid #06b6d4' : '1px solid rgba(71, 85, 105, 0.5)',
+                  backgroundColor: layers.radar ? 'rgba(6, 182, 212, 0.2)' : 'rgba(51, 65, 85, 0.3)',
+                  color: layers.radar ? '#06b6d4' : '#94a3b8',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  boxShadow: layers.radar ? '0 4px 20px rgba(6, 182, 212, 0.2)' : 'none'
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <circle cx="12" cy="12" r="6"/>
+                  <circle cx="12" cy="12" r="2"/>
+                  <line x1="12" y1="2" x2="12" y2="12"/>
+                </svg>
+                <div style={{ flex: 1, textAlign: 'left' }}>
+                  <div style={{ fontWeight: 500, fontSize: '14px' }}>Radar Meteorológico</div>
+                  <div style={{ fontSize: '12px', opacity: 0.75 }}>Alerta Rio</div>
                 </div>
               </button>
             </div>
@@ -1581,6 +1942,115 @@ useEffect(() => {
           }}
         />
       </div>
+
+      {/* BOTÃO FLUTUANTE: CENTRALIZAR NO RIO */}
+      <button
+        onClick={centralizarNoRio}
+        style={{
+          position: 'absolute',
+          top: '80px',
+          right: '10px',
+          zIndex: 1000,
+          backgroundColor: 'rgba(139, 92, 246, 0.95)',
+          border: '2px solid white',
+          borderRadius: '8px',
+          padding: '10px 16px',
+          cursor: 'pointer',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          color: 'white',
+          fontWeight: 600,
+          fontSize: '13px',
+          transition: 'all 0.2s'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'scale(1.05)';
+          e.currentTarget.style.boxShadow = '0 6px 16px rgba(139, 92, 246, 0.4)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'scale(1)';
+          e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+        }}
+        title="Centralizar no Município do Rio de Janeiro"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+          <circle cx="12" cy="12" r="10"/>
+          <circle cx="12" cy="12" r="3" fill="white"/>
+          <line x1="12" y1="2" x2="12" y2="6"/>
+          <line x1="12" y1="18" x2="12" y2="22"/>
+          <line x1="2" y1="12" x2="6" y2="12"/>
+          <line x1="18" y1="12" x2="22" y2="12"/>
+        </svg>
+        📍 Centralizar Rio
+      </button>
+
+      {/* OVERLAY DO RADAR METEOROLÓGICO */}
+      {layers.radar && (
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: painelAberto ? `${SIDEBAR_WIDTH}px` : '0px',
+          right: 0,
+          bottom: 0,
+          pointerEvents: 'auto',
+          zIndex: 999,
+          transition: 'left 0.3s ease'
+        }}>
+          {/* Barra de controle */}
+          <div style={{
+            position: 'absolute',
+            top: '10px',
+            right: '60px',
+            zIndex: 1000,
+            backgroundColor: 'rgba(30, 41, 59, 0.95)',
+            padding: '8px 12px',
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            border: '1px solid rgba(6, 182, 212, 0.3)',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
+          }}>
+            <span style={{ 
+              fontSize: '12px', 
+              color: '#06b6d4', 
+              fontWeight: 600 
+            }}>
+              🌩️ Radar Alerta Rio
+            </span>
+            <button
+              onClick={() => toggleLayer('radar')}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#ef4444',
+                cursor: 'pointer',
+                padding: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                fontSize: '18px'
+              }}
+              title="Fechar Radar"
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* Iframe do Radar */}
+          <iframe 
+            src="http://www.sistema-alerta-rio.com.br/upload/Mapa/mapaRadar.html" 
+            style={{
+              width: '100%',
+              height: '100%',
+              border: 'none',
+              borderRadius: '8px'
+            }}
+            title="Radar Meteorológico Alerta Rio"
+          />
+        </div>
+      )}
 
       <style>{`
         @keyframes spin {

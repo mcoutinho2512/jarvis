@@ -9536,3 +9536,1426 @@
 01:30:56 [vite] hmr update /src/Map.jsx, /src/index.css
 01:30:59 [vite] hmr update /src/Map.jsx, /src/index.css
 01:30:59 [vite] hmr update /src/Map.jsx, /src/index.css
+21:22:57 [vite] hmr update /src/Map.jsx, /src/index.css
+21:23:09 [vite] hmr update /src/Map.jsx, /src/index.css
+21:23:09 [vite] Internal server error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token, expected "," (20:4)
+
+  18 |     transito: true,
+  19 |     logradouros: false
+> 20 |     radar: false
+     |     ^
+  21 |   });
+  22 |   
+  23 |   const [stats, setStats] = useState({
+  Plugin: vite:react-babel
+  File: /home/servicedesk/municipal-assistant/src/Map.jsx:20:4
+  18 |      transito: true,
+  19 |      logradouros: false
+  20 |      radar: false
+     |      ^
+  21 |    });
+  22 |    
+      at constructor (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6630:19)
+      at JSXParserMixin.unexpected (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6650:16)
+      at JSXParserMixin.expect (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6930:12)
+      at JSXParserMixin.parseObjectLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11830:14)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11343:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseExprListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12185:18)
+      at JSXParserMixin.parseCallExpressionArguments (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11256:22)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11190:29)
+      at JSXParserMixin.parseSubscript (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11124:19)
+      at JSXParserMixin.parseSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11098:19)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11089:17)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12431:16)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseVar (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13393:91)
+      at JSXParserMixin.parseVarStatement (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13239:10)
+      at JSXParserMixin.parseStatementContent (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12860:23)
+      at JSXParserMixin.parseStatementLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12776:17)
+      at JSXParserMixin.parseStatementListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12756:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13325:61)
+      at JSXParserMixin.parseBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13318:10)
+      at JSXParserMixin.parseBlock (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13306:10)
+      at JSXParserMixin.parseFunctionBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12110:24)
+      at JSXParserMixin.parseArrowExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12085:10)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11695:12)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11335:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+21:26:25 [vite] hmr update /src/Map.jsx, /src/index.css
+21:26:25 [vite] Internal server error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token, expected "," (20:4)
+
+  18 |     transito: true,
+  19 |     logradouros: false
+> 20 |     radar: false
+     |     ^
+  21 |   });
+  22 |   
+  23 |   const [stats, setStats] = useState({
+  Plugin: vite:react-babel
+  File: /home/servicedesk/municipal-assistant/src/Map.jsx:20:4
+  18 |      transito: true,
+  19 |      logradouros: false
+  20 |      radar: false
+     |      ^
+  21 |    });
+  22 |    
+      at constructor (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6630:19)
+      at JSXParserMixin.unexpected (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6650:16)
+      at JSXParserMixin.expect (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6930:12)
+      at JSXParserMixin.parseObjectLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11830:14)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11343:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseExprListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12185:18)
+      at JSXParserMixin.parseCallExpressionArguments (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11256:22)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11190:29)
+      at JSXParserMixin.parseSubscript (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11124:19)
+      at JSXParserMixin.parseSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11098:19)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11089:17)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12431:16)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseVar (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13393:91)
+      at JSXParserMixin.parseVarStatement (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13239:10)
+      at JSXParserMixin.parseStatementContent (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12860:23)
+      at JSXParserMixin.parseStatementLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12776:17)
+      at JSXParserMixin.parseStatementListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12756:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13325:61)
+      at JSXParserMixin.parseBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13318:10)
+      at JSXParserMixin.parseBlock (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13306:10)
+      at JSXParserMixin.parseFunctionBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12110:24)
+      at JSXParserMixin.parseArrowExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12085:10)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11695:12)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11335:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+21:26:35 [vite] hmr update /src/Map.jsx, /src/index.css
+21:26:35 [vite] Internal server error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token, expected "," (20:4)
+
+  18 |     transito: true,
+  19 |     logradouros: false
+> 20 |     radar: false
+     |     ^
+  21 |   });
+  22 |   
+  23 |   const [stats, setStats] = useState({
+  Plugin: vite:react-babel
+  File: /home/servicedesk/municipal-assistant/src/Map.jsx:20:4
+  18 |      transito: true,
+  19 |      logradouros: false
+  20 |      radar: false
+     |      ^
+  21 |    });
+  22 |    
+      at constructor (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6630:19)
+      at JSXParserMixin.unexpected (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6650:16)
+      at JSXParserMixin.expect (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6930:12)
+      at JSXParserMixin.parseObjectLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11830:14)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11343:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseExprListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12185:18)
+      at JSXParserMixin.parseCallExpressionArguments (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11256:22)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11190:29)
+      at JSXParserMixin.parseSubscript (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11124:19)
+      at JSXParserMixin.parseSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11098:19)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11089:17)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12431:16)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseVar (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13393:91)
+      at JSXParserMixin.parseVarStatement (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13239:10)
+      at JSXParserMixin.parseStatementContent (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12860:23)
+      at JSXParserMixin.parseStatementLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12776:17)
+      at JSXParserMixin.parseStatementListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12756:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13325:61)
+      at JSXParserMixin.parseBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13318:10)
+      at JSXParserMixin.parseBlock (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13306:10)
+      at JSXParserMixin.parseFunctionBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12110:24)
+      at JSXParserMixin.parseArrowExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12085:10)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11695:12)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11335:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+21:26:38 [vite] hmr update /src/Map.jsx, /src/index.css
+21:26:38 [vite] Internal server error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token, expected "," (20:4)
+
+  18 |     transito: true,
+  19 |     logradouros: false
+> 20 |     radar: false
+     |     ^
+  21 |   });
+  22 |   
+  23 |   const [stats, setStats] = useState({
+  Plugin: vite:react-babel
+  File: /home/servicedesk/municipal-assistant/src/Map.jsx:20:4
+  18 |      transito: true,
+  19 |      logradouros: false
+  20 |      radar: false
+     |      ^
+  21 |    });
+  22 |    
+      at constructor (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6630:19)
+      at JSXParserMixin.unexpected (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6650:16)
+      at JSXParserMixin.expect (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6930:12)
+      at JSXParserMixin.parseObjectLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11830:14)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11343:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseExprListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12185:18)
+      at JSXParserMixin.parseCallExpressionArguments (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11256:22)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11190:29)
+      at JSXParserMixin.parseSubscript (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11124:19)
+      at JSXParserMixin.parseSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11098:19)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11089:17)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12431:16)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseVar (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13393:91)
+      at JSXParserMixin.parseVarStatement (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13239:10)
+      at JSXParserMixin.parseStatementContent (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12860:23)
+      at JSXParserMixin.parseStatementLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12776:17)
+      at JSXParserMixin.parseStatementListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12756:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13325:61)
+      at JSXParserMixin.parseBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13318:10)
+      at JSXParserMixin.parseBlock (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13306:10)
+      at JSXParserMixin.parseFunctionBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12110:24)
+      at JSXParserMixin.parseArrowExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12085:10)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11695:12)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11335:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+21:26:38 [vite] hmr update /src/Map.jsx, /src/index.css
+21:26:38 [vite] Internal server error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token, expected "," (20:4)
+
+  18 |     transito: true,
+  19 |     logradouros: false
+> 20 |     radar: false
+     |     ^
+  21 |   });
+  22 |   
+  23 |   const [stats, setStats] = useState({
+  Plugin: vite:react-babel
+  File: /home/servicedesk/municipal-assistant/src/Map.jsx:20:4
+  18 |      transito: true,
+  19 |      logradouros: false
+  20 |      radar: false
+     |      ^
+  21 |    });
+  22 |    
+      at constructor (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6630:19)
+      at JSXParserMixin.unexpected (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6650:16)
+      at JSXParserMixin.expect (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6930:12)
+      at JSXParserMixin.parseObjectLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11830:14)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11343:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseExprListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12185:18)
+      at JSXParserMixin.parseCallExpressionArguments (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11256:22)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11190:29)
+      at JSXParserMixin.parseSubscript (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11124:19)
+      at JSXParserMixin.parseSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11098:19)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11089:17)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12431:16)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseVar (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13393:91)
+      at JSXParserMixin.parseVarStatement (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13239:10)
+      at JSXParserMixin.parseStatementContent (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12860:23)
+      at JSXParserMixin.parseStatementLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12776:17)
+      at JSXParserMixin.parseStatementListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12756:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13325:61)
+      at JSXParserMixin.parseBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13318:10)
+      at JSXParserMixin.parseBlock (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13306:10)
+      at JSXParserMixin.parseFunctionBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12110:24)
+      at JSXParserMixin.parseArrowExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12085:10)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11695:12)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11335:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+21:26:53 [vite] Pre-transform error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token, expected "," (20:4)
+
+  18 |     transito: true,
+  19 |     logradouros: false
+> 20 |     radar: false
+     |     ^
+  21 |   });
+  22 |   
+  23 |   const [stats, setStats] = useState({
+21:26:53 [vite] Internal server error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token, expected "," (20:4)
+
+  18 |     transito: true,
+  19 |     logradouros: false
+> 20 |     radar: false
+     |     ^
+  21 |   });
+  22 |   
+  23 |   const [stats, setStats] = useState({
+  Plugin: vite:react-babel
+  File: /home/servicedesk/municipal-assistant/src/Map.jsx:20:4
+  18 |      transito: true,
+  19 |      logradouros: false
+  20 |      radar: false
+     |      ^
+  21 |    });
+  22 |    
+      at constructor (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6630:19)
+      at JSXParserMixin.unexpected (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6650:16)
+      at JSXParserMixin.expect (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6930:12)
+      at JSXParserMixin.parseObjectLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11830:14)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11343:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseExprListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12185:18)
+      at JSXParserMixin.parseCallExpressionArguments (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11256:22)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11190:29)
+      at JSXParserMixin.parseSubscript (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11124:19)
+      at JSXParserMixin.parseSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11098:19)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11089:17)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12431:16)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseVar (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13393:91)
+      at JSXParserMixin.parseVarStatement (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13239:10)
+      at JSXParserMixin.parseStatementContent (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12860:23)
+      at JSXParserMixin.parseStatementLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12776:17)
+      at JSXParserMixin.parseStatementListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12756:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13325:61)
+      at JSXParserMixin.parseBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13318:10)
+      at JSXParserMixin.parseBlock (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13306:10)
+      at JSXParserMixin.parseFunctionBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12110:24)
+      at JSXParserMixin.parseArrowExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12085:10)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11695:12)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11335:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+21:27:03 [vite] hmr update /src/Map.jsx, /src/index.css
+21:27:03 [vite] Internal server error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token, expected "," (20:4)
+
+  18 |     transito: true,
+  19 |     logradouros: false
+> 20 |     radar: false
+     |     ^
+  21 |   });
+  22 |   
+  23 |   const [stats, setStats] = useState({
+  Plugin: vite:react-babel
+  File: /home/servicedesk/municipal-assistant/src/Map.jsx:20:4
+  18 |      transito: true,
+  19 |      logradouros: false
+  20 |      radar: false
+     |      ^
+  21 |    });
+  22 |    
+      at constructor (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6630:19)
+      at JSXParserMixin.unexpected (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6650:16)
+      at JSXParserMixin.expect (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6930:12)
+      at JSXParserMixin.parseObjectLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11830:14)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11343:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseExprListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12185:18)
+      at JSXParserMixin.parseCallExpressionArguments (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11256:22)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11190:29)
+      at JSXParserMixin.parseSubscript (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11124:19)
+      at JSXParserMixin.parseSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11098:19)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11089:17)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12431:16)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseVar (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13393:91)
+      at JSXParserMixin.parseVarStatement (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13239:10)
+      at JSXParserMixin.parseStatementContent (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12860:23)
+      at JSXParserMixin.parseStatementLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12776:17)
+      at JSXParserMixin.parseStatementListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12756:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13325:61)
+      at JSXParserMixin.parseBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13318:10)
+      at JSXParserMixin.parseBlock (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13306:10)
+      at JSXParserMixin.parseFunctionBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12110:24)
+      at JSXParserMixin.parseArrowExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12085:10)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11695:12)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11335:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+21:27:03 [vite] Pre-transform error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token, expected "," (20:4)
+
+  18 |     transito: true,
+  19 |     logradouros: false
+> 20 |     radar: false
+     |     ^
+  21 |   });
+  22 |   
+  23 |   const [stats, setStats] = useState({
+21:27:03 [vite] Internal server error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token, expected "," (20:4)
+
+  18 |     transito: true,
+  19 |     logradouros: false
+> 20 |     radar: false
+     |     ^
+  21 |   });
+  22 |   
+  23 |   const [stats, setStats] = useState({
+  Plugin: vite:react-babel
+  File: /home/servicedesk/municipal-assistant/src/Map.jsx:20:4
+  18 |      transito: true,
+  19 |      logradouros: false
+  20 |      radar: false
+     |      ^
+  21 |    });
+  22 |    
+      at constructor (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6630:19)
+      at JSXParserMixin.unexpected (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6650:16)
+      at JSXParserMixin.expect (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6930:12)
+      at JSXParserMixin.parseObjectLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11830:14)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11343:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseExprListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12185:18)
+      at JSXParserMixin.parseCallExpressionArguments (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11256:22)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11190:29)
+      at JSXParserMixin.parseSubscript (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11124:19)
+      at JSXParserMixin.parseSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11098:19)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11089:17)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12431:16)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseVar (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13393:91)
+      at JSXParserMixin.parseVarStatement (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13239:10)
+      at JSXParserMixin.parseStatementContent (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12860:23)
+      at JSXParserMixin.parseStatementLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12776:17)
+      at JSXParserMixin.parseStatementListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12756:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13325:61)
+      at JSXParserMixin.parseBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13318:10)
+      at JSXParserMixin.parseBlock (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13306:10)
+      at JSXParserMixin.parseFunctionBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12110:24)
+      at JSXParserMixin.parseArrowExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12085:10)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11695:12)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11335:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+21:27:06 [vite] hmr update /src/Map.jsx, /src/index.css
+21:27:06 [vite] Internal server error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token, expected "," (20:4)
+
+  18 |     transito: true,
+  19 |     logradouros: false
+> 20 |     radar: false
+     |     ^
+  21 |   });
+  22 |   
+  23 |   const [stats, setStats] = useState({
+  Plugin: vite:react-babel
+  File: /home/servicedesk/municipal-assistant/src/Map.jsx:20:4
+  18 |      transito: true,
+  19 |      logradouros: false
+  20 |      radar: false
+     |      ^
+  21 |    });
+  22 |    
+      at constructor (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6630:19)
+      at JSXParserMixin.unexpected (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6650:16)
+      at JSXParserMixin.expect (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6930:12)
+      at JSXParserMixin.parseObjectLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11830:14)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11343:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseExprListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12185:18)
+      at JSXParserMixin.parseCallExpressionArguments (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11256:22)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11190:29)
+      at JSXParserMixin.parseSubscript (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11124:19)
+      at JSXParserMixin.parseSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11098:19)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11089:17)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12431:16)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseVar (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13393:91)
+      at JSXParserMixin.parseVarStatement (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13239:10)
+      at JSXParserMixin.parseStatementContent (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12860:23)
+      at JSXParserMixin.parseStatementLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12776:17)
+      at JSXParserMixin.parseStatementListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12756:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13325:61)
+      at JSXParserMixin.parseBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13318:10)
+      at JSXParserMixin.parseBlock (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13306:10)
+      at JSXParserMixin.parseFunctionBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12110:24)
+      at JSXParserMixin.parseArrowExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12085:10)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11695:12)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11335:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+21:27:06 [vite] Pre-transform error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token, expected "," (20:4)
+
+  18 |     transito: true,
+  19 |     logradouros: false
+> 20 |     radar: false
+     |     ^
+  21 |   });
+  22 |   
+  23 |   const [stats, setStats] = useState({
+21:27:06 [vite] Internal server error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token, expected "," (20:4)
+
+  18 |     transito: true,
+  19 |     logradouros: false
+> 20 |     radar: false
+     |     ^
+  21 |   });
+  22 |   
+  23 |   const [stats, setStats] = useState({
+  Plugin: vite:react-babel
+  File: /home/servicedesk/municipal-assistant/src/Map.jsx:20:4
+  18 |      transito: true,
+  19 |      logradouros: false
+  20 |      radar: false
+     |      ^
+  21 |    });
+  22 |    
+      at constructor (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6630:19)
+      at JSXParserMixin.unexpected (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6650:16)
+      at JSXParserMixin.expect (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6930:12)
+      at JSXParserMixin.parseObjectLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11830:14)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11343:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseExprListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12185:18)
+      at JSXParserMixin.parseCallExpressionArguments (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11256:22)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11190:29)
+      at JSXParserMixin.parseSubscript (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11124:19)
+      at JSXParserMixin.parseSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11098:19)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11089:17)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12431:16)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseVar (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13393:91)
+      at JSXParserMixin.parseVarStatement (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13239:10)
+      at JSXParserMixin.parseStatementContent (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12860:23)
+      at JSXParserMixin.parseStatementLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12776:17)
+      at JSXParserMixin.parseStatementListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12756:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13325:61)
+      at JSXParserMixin.parseBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13318:10)
+      at JSXParserMixin.parseBlock (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13306:10)
+      at JSXParserMixin.parseFunctionBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12110:24)
+      at JSXParserMixin.parseArrowExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12085:10)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11695:12)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11335:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+21:28:31 [vite] Internal server error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token, expected "," (20:4)
+
+  18 |     transito: true,
+  19 |     logradouros: false
+> 20 |     radar: false
+     |     ^
+  21 |   });
+  22 |   
+  23 |   const [stats, setStats] = useState({
+  Plugin: vite:react-babel
+  File: /home/servicedesk/municipal-assistant/src/Map.jsx:20:4
+  18 |      transito: true,
+  19 |      logradouros: false
+  20 |      radar: false
+     |      ^
+  21 |    });
+  22 |    
+      at constructor (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6630:19)
+      at JSXParserMixin.unexpected (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6650:16)
+      at JSXParserMixin.expect (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6930:12)
+      at JSXParserMixin.parseObjectLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11830:14)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11343:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseExprListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12185:18)
+      at JSXParserMixin.parseCallExpressionArguments (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11256:22)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11190:29)
+      at JSXParserMixin.parseSubscript (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11124:19)
+      at JSXParserMixin.parseSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11098:19)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11089:17)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12431:16)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseVar (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13393:91)
+      at JSXParserMixin.parseVarStatement (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13239:10)
+      at JSXParserMixin.parseStatementContent (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12860:23)
+      at JSXParserMixin.parseStatementLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12776:17)
+      at JSXParserMixin.parseStatementListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12756:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13325:61)
+      at JSXParserMixin.parseBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13318:10)
+      at JSXParserMixin.parseBlock (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13306:10)
+      at JSXParserMixin.parseFunctionBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12110:24)
+      at JSXParserMixin.parseArrowExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12085:10)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11695:12)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11335:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+21:28:36 [vite] Internal server error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token, expected "," (20:4)
+
+  18 |     transito: true,
+  19 |     logradouros: false
+> 20 |     radar: false
+     |     ^
+  21 |   });
+  22 |   
+  23 |   const [stats, setStats] = useState({
+  Plugin: vite:react-babel
+  File: /home/servicedesk/municipal-assistant/src/Map.jsx:20:4
+  18 |      transito: true,
+  19 |      logradouros: false
+  20 |      radar: false
+     |      ^
+  21 |    });
+  22 |    
+      at constructor (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6630:19)
+      at JSXParserMixin.unexpected (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6650:16)
+      at JSXParserMixin.expect (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6930:12)
+      at JSXParserMixin.parseObjectLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11830:14)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11343:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseExprListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12185:18)
+      at JSXParserMixin.parseCallExpressionArguments (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11256:22)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11190:29)
+      at JSXParserMixin.parseSubscript (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11124:19)
+      at JSXParserMixin.parseSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11098:19)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11089:17)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12431:16)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseVar (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13393:91)
+      at JSXParserMixin.parseVarStatement (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13239:10)
+      at JSXParserMixin.parseStatementContent (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12860:23)
+      at JSXParserMixin.parseStatementLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12776:17)
+      at JSXParserMixin.parseStatementListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12756:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13325:61)
+      at JSXParserMixin.parseBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13318:10)
+      at JSXParserMixin.parseBlock (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13306:10)
+      at JSXParserMixin.parseFunctionBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12110:24)
+      at JSXParserMixin.parseArrowExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12085:10)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11695:12)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11335:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+21:29:47 [vite] hmr update /src/Map.jsx, /src/index.css
+21:29:47 [vite] Internal server error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token, expected "," (20:4)
+
+  18 |     transito: true,
+  19 |     logradouros: false
+> 20 |     radar: false
+     |     ^
+  21 |   });
+  22 |   
+  23 |   const [stats, setStats] = useState({
+  Plugin: vite:react-babel
+  File: /home/servicedesk/municipal-assistant/src/Map.jsx:20:4
+  18 |      transito: true,
+  19 |      logradouros: false
+  20 |      radar: false
+     |      ^
+  21 |    });
+  22 |    
+      at constructor (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6630:19)
+      at JSXParserMixin.unexpected (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6650:16)
+      at JSXParserMixin.expect (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6930:12)
+      at JSXParserMixin.parseObjectLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11830:14)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11343:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseExprListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12185:18)
+      at JSXParserMixin.parseCallExpressionArguments (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11256:22)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11190:29)
+      at JSXParserMixin.parseSubscript (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11124:19)
+      at JSXParserMixin.parseSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11098:19)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11089:17)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12431:16)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseVar (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13393:91)
+      at JSXParserMixin.parseVarStatement (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13239:10)
+      at JSXParserMixin.parseStatementContent (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12860:23)
+      at JSXParserMixin.parseStatementLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12776:17)
+      at JSXParserMixin.parseStatementListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12756:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13325:61)
+      at JSXParserMixin.parseBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13318:10)
+      at JSXParserMixin.parseBlock (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13306:10)
+      at JSXParserMixin.parseFunctionBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12110:24)
+      at JSXParserMixin.parseArrowExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12085:10)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11695:12)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11335:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+21:30:15 [vite] hmr update /src/Map.jsx, /src/index.css
+21:30:15 [vite] Internal server error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token, expected "," (20:4)
+
+  18 |     transito: true,
+  19 |     logradouros: false
+> 20 |     radar: false
+     |     ^
+  21 |   });
+  22 |   
+  23 |   const [stats, setStats] = useState({
+  Plugin: vite:react-babel
+  File: /home/servicedesk/municipal-assistant/src/Map.jsx:20:4
+  18 |      transito: true,
+  19 |      logradouros: false
+  20 |      radar: false
+     |      ^
+  21 |    });
+  22 |    
+      at constructor (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6630:19)
+      at JSXParserMixin.unexpected (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6650:16)
+      at JSXParserMixin.expect (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6930:12)
+      at JSXParserMixin.parseObjectLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11830:14)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11343:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseExprListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12185:18)
+      at JSXParserMixin.parseCallExpressionArguments (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11256:22)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11190:29)
+      at JSXParserMixin.parseSubscript (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11124:19)
+      at JSXParserMixin.parseSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11098:19)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11089:17)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12431:16)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseVar (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13393:91)
+      at JSXParserMixin.parseVarStatement (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13239:10)
+      at JSXParserMixin.parseStatementContent (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12860:23)
+      at JSXParserMixin.parseStatementLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12776:17)
+      at JSXParserMixin.parseStatementListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12756:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13325:61)
+      at JSXParserMixin.parseBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13318:10)
+      at JSXParserMixin.parseBlock (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13306:10)
+      at JSXParserMixin.parseFunctionBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12110:24)
+      at JSXParserMixin.parseArrowExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12085:10)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11695:12)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11335:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+21:30:23 [vite] hmr update /src/Map.jsx, /src/index.css
+21:30:23 [vite] Internal server error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token, expected "," (20:4)
+
+  18 |     transito: true,
+  19 |     logradouros: false
+> 20 |     radar: false
+     |     ^
+  21 |   });
+  22 |   
+  23 |   const [stats, setStats] = useState({
+  Plugin: vite:react-babel
+  File: /home/servicedesk/municipal-assistant/src/Map.jsx:20:4
+  18 |      transito: true,
+  19 |      logradouros: false
+  20 |      radar: false
+     |      ^
+  21 |    });
+  22 |    
+      at constructor (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6630:19)
+      at JSXParserMixin.unexpected (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6650:16)
+      at JSXParserMixin.expect (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6930:12)
+      at JSXParserMixin.parseObjectLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11830:14)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11343:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseExprListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12185:18)
+      at JSXParserMixin.parseCallExpressionArguments (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11256:22)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11190:29)
+      at JSXParserMixin.parseSubscript (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11124:19)
+      at JSXParserMixin.parseSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11098:19)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11089:17)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12431:16)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseVar (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13393:91)
+      at JSXParserMixin.parseVarStatement (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13239:10)
+      at JSXParserMixin.parseStatementContent (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12860:23)
+      at JSXParserMixin.parseStatementLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12776:17)
+      at JSXParserMixin.parseStatementListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12756:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13325:61)
+      at JSXParserMixin.parseBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13318:10)
+      at JSXParserMixin.parseBlock (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13306:10)
+      at JSXParserMixin.parseFunctionBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12110:24)
+      at JSXParserMixin.parseArrowExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12085:10)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11695:12)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11335:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+21:30:27 [vite] hmr update /src/Map.jsx, /src/index.css
+21:30:27 [vite] Internal server error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token, expected "," (20:4)
+
+  18 |     transito: true,
+  19 |     logradouros: false
+> 20 |     radar: false
+     |     ^
+  21 |   });
+  22 |   
+  23 |   const [stats, setStats] = useState({
+  Plugin: vite:react-babel
+  File: /home/servicedesk/municipal-assistant/src/Map.jsx:20:4
+  18 |      transito: true,
+  19 |      logradouros: false
+  20 |      radar: false
+     |      ^
+  21 |    });
+  22 |    
+      at constructor (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6630:19)
+      at JSXParserMixin.unexpected (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6650:16)
+      at JSXParserMixin.expect (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6930:12)
+      at JSXParserMixin.parseObjectLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11830:14)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11343:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseExprListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12185:18)
+      at JSXParserMixin.parseCallExpressionArguments (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11256:22)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11190:29)
+      at JSXParserMixin.parseSubscript (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11124:19)
+      at JSXParserMixin.parseSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11098:19)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11089:17)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12431:16)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseVar (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13393:91)
+      at JSXParserMixin.parseVarStatement (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13239:10)
+      at JSXParserMixin.parseStatementContent (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12860:23)
+      at JSXParserMixin.parseStatementLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12776:17)
+      at JSXParserMixin.parseStatementListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12756:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13325:61)
+      at JSXParserMixin.parseBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13318:10)
+      at JSXParserMixin.parseBlock (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13306:10)
+      at JSXParserMixin.parseFunctionBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12110:24)
+      at JSXParserMixin.parseArrowExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12085:10)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11695:12)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11335:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+21:30:29 [vite] hmr update /src/Map.jsx, /src/index.css
+21:30:29 [vite] Internal server error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token, expected "," (20:4)
+
+  18 |     transito: true,
+  19 |     logradouros: false
+> 20 |     radar: false
+     |     ^
+  21 |   });
+  22 |   
+  23 |   const [stats, setStats] = useState({
+  Plugin: vite:react-babel
+  File: /home/servicedesk/municipal-assistant/src/Map.jsx:20:4
+  18 |      transito: true,
+  19 |      logradouros: false
+  20 |      radar: false
+     |      ^
+  21 |    });
+  22 |    
+      at constructor (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6630:19)
+      at JSXParserMixin.unexpected (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6650:16)
+      at JSXParserMixin.expect (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6930:12)
+      at JSXParserMixin.parseObjectLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11830:14)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11343:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseExprListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12185:18)
+      at JSXParserMixin.parseCallExpressionArguments (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11256:22)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11190:29)
+      at JSXParserMixin.parseSubscript (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11124:19)
+      at JSXParserMixin.parseSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11098:19)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11089:17)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12431:16)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseVar (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13393:91)
+      at JSXParserMixin.parseVarStatement (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13239:10)
+      at JSXParserMixin.parseStatementContent (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12860:23)
+      at JSXParserMixin.parseStatementLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12776:17)
+      at JSXParserMixin.parseStatementListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12756:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13325:61)
+      at JSXParserMixin.parseBlockBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13318:10)
+      at JSXParserMixin.parseBlock (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:13306:10)
+      at JSXParserMixin.parseFunctionBody (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12110:24)
+      at JSXParserMixin.parseArrowExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12085:10)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11695:12)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11335:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+21:35:13 [vite] hmr update /src/Map.jsx, /src/index.css
+21:35:14 [vite] hmr update /src/Map.jsx, /src/index.css
+21:35:14 [vite] hmr update /src/Map.jsx, /src/index.css
+21:35:14 [vite] hmr update /src/Map.jsx, /src/index.css
+21:44:18 [vite] hmr update /src/Map.jsx, /src/index.css
+21:44:20 [vite] hmr update /src/Map.jsx, /src/index.css
+21:44:20 [vite] Internal server error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token (371:6)
+
+  369 |         attribution: '© OpenStreetMap contributors',
+  370 |         maxZoom: 
+> 371 |       }).addTo(map);
+      |       ^
+  372 |
+  373 |       mapInstanceRef.current = map;
+  374 |       console.log('✅ [MAP] Mapa configurado com sucesso');
+  Plugin: vite:react-babel
+  File: /home/servicedesk/municipal-assistant/src/Map.jsx:371:6
+  369|          attribution: '© OpenStreetMap contributors',
+  370|          maxZoom: 
+  371|        }).addTo(map);
+     |        ^
+  372|  
+  373|        mapInstanceRef.current = map;
+      at constructor (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6630:19)
+      at JSXParserMixin.unexpected (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6650:16)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11451:16)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseObjectProperty (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11960:83)
+      at JSXParserMixin.parseObjPropValue (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11988:100)
+      at JSXParserMixin.parsePropertyDefinition (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11925:17)
+      at JSXParserMixin.parseObjectLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11840:21)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11343:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseExprListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12185:18)
+      at JSXParserMixin.parseCallExpressionArguments (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11256:22)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11190:29)
+      at JSXParserMixin.parseSubscript (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11124:19)
+      at JSXParserMixin.parseSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11098:19)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11089:17)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at JSXParserMixin.parseExpressionBase (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10788:23)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10784:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12431:16)
+      at JSXParserMixin.parseExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10784:17)
+      at JSXParserMixin.parseStatementContent (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12904:23)
+21:44:20 [vite] Internal server error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token (371:6)
+
+  369 |         attribution: '© OpenStreetMap contributors',
+  370 |         maxZoom: 
+> 371 |       }).addTo(map);
+      |       ^
+  372 |
+  373 |       mapInstanceRef.current = map;
+  374 |       console.log('✅ [MAP] Mapa configurado com sucesso');
+  Plugin: vite:react-babel
+  File: /home/servicedesk/municipal-assistant/src/Map.jsx:371:6
+  369|          attribution: '© OpenStreetMap contributors',
+  370|          maxZoom: 
+  371|        }).addTo(map);
+     |        ^
+  372|  
+  373|        mapInstanceRef.current = map;
+      at constructor (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6630:19)
+      at JSXParserMixin.unexpected (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6650:16)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11451:16)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseObjectProperty (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11960:83)
+      at JSXParserMixin.parseObjPropValue (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11988:100)
+      at JSXParserMixin.parsePropertyDefinition (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11925:17)
+      at JSXParserMixin.parseObjectLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11840:21)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11343:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseExprListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12185:18)
+      at JSXParserMixin.parseCallExpressionArguments (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11256:22)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11190:29)
+      at JSXParserMixin.parseSubscript (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11124:19)
+      at JSXParserMixin.parseSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11098:19)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11089:17)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at JSXParserMixin.parseExpressionBase (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10788:23)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10784:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12431:16)
+      at JSXParserMixin.parseExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10784:17)
+      at JSXParserMixin.parseStatementContent (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12904:23)
+21:44:20 [vite] Internal server error: /home/servicedesk/municipal-assistant/src/Map.jsx: Unexpected token (371:6)
+
+  369 |         attribution: '© OpenStreetMap contributors',
+  370 |         maxZoom: 
+> 371 |       }).addTo(map);
+      |       ^
+  372 |
+  373 |       mapInstanceRef.current = map;
+  374 |       console.log('✅ [MAP] Mapa configurado com sucesso');
+  Plugin: vite:react-babel
+  File: /home/servicedesk/municipal-assistant/src/Map.jsx:371:6
+  369|          attribution: '© OpenStreetMap contributors',
+  370|          maxZoom: 
+  371|        }).addTo(map);
+     |        ^
+  372|  
+  373|        mapInstanceRef.current = map;
+      at constructor (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6630:19)
+      at JSXParserMixin.unexpected (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:6650:16)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11451:16)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseObjectProperty (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11960:83)
+      at JSXParserMixin.parseObjPropValue (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11988:100)
+      at JSXParserMixin.parsePropertyDefinition (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11925:17)
+      at JSXParserMixin.parseObjectLike (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11840:21)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11343:23)
+      at JSXParserMixin.parseExprAtom (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:4797:20)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11085:23)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12436:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10804:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12503:17)
+      at JSXParserMixin.parseExprListItem (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12185:18)
+      at JSXParserMixin.parseCallExpressionArguments (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11256:22)
+      at JSXParserMixin.parseCoverCallAndAsyncArrowHead (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11190:29)
+      at JSXParserMixin.parseSubscript (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11124:19)
+      at JSXParserMixin.parseSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11098:19)
+      at JSXParserMixin.parseExprSubscripts (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11089:17)
+      at JSXParserMixin.parseUpdate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11070:21)
+      at JSXParserMixin.parseMaybeUnary (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:11050:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10903:61)
+      at JSXParserMixin.parseExprOps (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10908:23)
+      at JSXParserMixin.parseMaybeConditional (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10885:23)
+      at JSXParserMixin.parseMaybeAssign (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10835:21)
+      at JSXParserMixin.parseExpressionBase (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10788:23)
+      at /home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10784:39
+      at JSXParserMixin.allowInAnd (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12431:16)
+      at JSXParserMixin.parseExpression (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:10784:17)
+      at JSXParserMixin.parseStatementContent (/home/servicedesk/municipal-assistant/node_modules/@babel/parser/lib/index.js:12904:23)
+21:44:22 [vite] hmr update /src/Map.jsx, /src/index.css
+21:44:22 [vite] hmr update /src/Map.jsx, /src/index.css
+21:44:25 [vite] hmr update /src/Map.jsx, /src/index.css
+21:45:03 [vite] hmr update /src/Map.jsx, /src/index.css
+21:45:04 [vite] hmr update /src/Map.jsx, /src/index.css
+21:45:04 [vite] hmr update /src/Map.jsx, /src/index.css
+21:45:04 [vite] hmr update /src/Map.jsx, /src/index.css
+21:45:12 [vite] hmr update /src/Map.jsx, /src/index.css
+21:45:14 [vite] hmr update /src/Map.jsx, /src/index.css
+21:45:16 [vite] hmr update /src/Map.jsx, /src/index.css
+21:45:16 [vite] hmr update /src/Map.jsx, /src/index.css
+21:45:16 [vite] hmr update /src/Map.jsx, /src/index.css
+21:45:26 [vite] hmr update /src/Map.jsx, /src/index.css
+21:45:26 [vite] hmr update /src/Map.jsx, /src/index.css
+21:45:26 [vite] hmr update /src/Map.jsx, /src/index.css
+21:45:26 [vite] hmr update /src/Map.jsx, /src/index.css
+21:45:29 [vite] hmr update /src/Map.jsx, /src/index.css
+21:45:32 [vite] hmr update /src/Map.jsx, /src/index.css
+21:45:32 [vite] hmr update /src/Map.jsx, /src/index.css
+21:45:32 [vite] hmr update /src/Map.jsx, /src/index.css
+21:45:32 [vite] hmr update /src/Map.jsx, /src/index.css
+21:46:13 [vite] hmr update /src/Map.jsx, /src/index.css
+21:46:14 [vite] hmr update /src/Map.jsx, /src/index.css
+21:46:15 [vite] hmr update /src/Map.jsx, /src/index.css
+21:46:15 [vite] hmr update /src/Map.jsx, /src/index.css
+01:55:24 [vite] hmr update /src/Map.jsx, /src/index.css
+01:55:25 [vite] hmr update /src/Map.jsx, /src/index.css
+01:55:26 [vite] hmr update /src/Map.jsx, /src/index.css
+01:55:26 [vite] hmr update /src/Map.jsx, /src/index.css
+01:55:26 [vite] hmr update /src/Map.jsx, /src/index.css
+02:00:54 [vite] hmr update /src/Map.jsx, /src/index.css
+02:00:56 [vite] hmr update /src/Map.jsx, /src/index.css
+02:00:56 [vite] hmr update /src/Map.jsx, /src/index.css
+02:12:37 [vite] hmr update /src/Map.jsx, /src/index.css
+02:12:38 [vite] hmr update /src/Map.jsx, /src/index.css
+02:12:38 [vite] hmr update /src/Map.jsx, /src/index.css
+02:12:38 [vite] hmr update /src/Map.jsx, /src/index.css
