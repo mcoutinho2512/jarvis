@@ -1,0 +1,320 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { Radio, Droplets, Car, AlertCircle, Layers, X } from 'lucide-react';
+
+const Map = () => {
+  const mapRef = useRef(null);
+  const mapInstanceRef = useRef(null);
+  const [loading, setLoading] = useState(true);
+  const [layers, setLayers] = useState({
+    sirenes: true,
+    pluviometros: true,
+    transito: true,
+    logradouros: false
+  });
+  const [stats, setStats] = useState({
+    sirenes: 0,
+    pluviometros: 0,
+    transito: 0
+  });
+
+  useEffect(() => {
+    // Carrega o Leaflet dinamicamente
+    const loadLeaflet = async () => {
+      // Adiciona CSS do Leaflet
+      if (!document.getElementById('leaflet-css')) {
+        const link = document.createElement('link');
+        link.id = 'leaflet-css';
+        link.rel = 'stylesheet';
+        link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        document.head.appendChild(link);
+      }
+
+      // Carrega o script do Leaflet
+      if (!window.L) {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+          script.onload = resolve;
+          script.onerror = reject;
+          document.body.appendChild(script);
+        });
+      }
+
+      initializeMap();
+    };
+
+    loadLeaflet();
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  }, []);
+
+  const initializeMap = async () => {
+    if (!mapRef.current || mapInstanceRef.current) return;
+
+    const L = window.L;
+
+    // Cria o mapa centrado no Rio de Janeiro
+    const map = L.map(mapRef.current, {
+      zoomControl: true,
+      attributionControl: true
+    }).setView([-22.9068, -43.1729], 11);
+
+    // Adiciona camada do OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors',
+      maxZoom: 19
+    }).addTo(map);
+
+    mapInstanceRef.current = map;
+
+    // Carrega os dados
+    await loadAllLayers(map, L);
+    setLoading(false);
+  };
+
+  const loadAllLayers = async (map, L) => {
+    try {
+      // Carrega sirenes
+      const sirenes = await fetch('/api/sirenes').then(r => r.json());
+      if (layers.sirenes) addSirenesLayer(map, L, sirenes);
+      setStats(prev => ({ ...prev, sirenes: sirenes.length }));
+
+      // Carrega pluviômetros
+      const pluvio = await fetch('/api/pluviometria').then(r => r.json());
+      if (layers.pluviometros) addPluviometrosLayer(map, L, pluvio);
+      setStats(prev => ({ ...prev, pluviometros: pluvio.features?.length || 0 }));
+
+      // Carrega trânsito
+      const waze = await fetch('/api/waze').then(r => r.json());
+      if (layers.transito) addTransitoLayer(map, L, waze);
+      setStats(prev => ({ ...prev, transito: waze.alerts?.length || 0 }));
+
+    } catch (error) {
+      console.error('Erro ao carregar camadas:', error);
+    }
+  };
+
+  const addSirenesLayer = (map, L, sirenes) => {
+    sirenes.forEach(sirene => {
+      // Define cor baseada no status
+      const color = sirene.tocando ? '#ef4444' : sirene.online ? '#22c55e' : '#6b7280';
+      const icon = L.divIcon({
+        html: `<div style="background-color: ${color}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.3);"></div>`,
+        className: '',
+        iconSize: [12, 12]
+      });
+
+      const marker = L.marker([sirene.latitude, sirene.longitude], { icon });
+      
+      const popup = `
+        <div style="font-family: system-ui; min-width: 200px;">
+          <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: bold; color: #1e293b;">
+            🚨 ${sirene.nome}
+          </h3>
+          <div style="font-size: 12px; color: #64748b; margin-bottom: 8px;">
+            📍 ${sirene.bairro}
+          </div>
+          <div style="font-size: 12px; padding: 4px 8px; background: ${color}; color: white; border-radius: 4px; display: inline-block;">
+            ${sirene.tocando ? '⚠️ TOCANDO' : sirene.online ? '✅ Online' : '❌ Offline'}
+          </div>
+          <div style="font-size: 11px; color: #94a3b8; margin-top: 8px;">
+            ${sirene.localizacao}
+          </div>
+        </div>
+      `;
+      
+      marker.bindPopup(popup);
+      marker.addTo(map);
+    });
+  };
+
+  const addPluviometrosLayer = (map, L, data) => {
+    if (!data.features) return;
+
+    data.features.forEach(feature => {
+      const coords = feature.geometry.coordinates;
+      const props = feature.properties;
+      const m15 = parseFloat(props.data?.m15?.replace(',', '.')) || 0;
+      
+      // Cor baseada na intensidade da chuva
+      const color = m15 > 10 ? '#dc2626' : m15 > 5 ? '#f59e0b' : m15 > 0 ? '#3b82f6' : '#94a3b8';
+      
+      const icon = L.divIcon({
+        html: `<div style="background-color: ${color}; width: 10px; height: 10px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.3);"></div>`,
+        className: '',
+        iconSize: [10, 10]
+      });
+
+      const marker = L.marker([coords[1], coords[0]], { icon });
+      
+      const popup = `
+        <div style="font-family: system-ui; min-width: 180px;">
+          <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: bold; color: #1e293b;">
+            💧 ${props.station?.name || 'Estação'}
+          </h3>
+          <div style="font-size: 12px; margin: 4px 0;">
+            <strong>Últimos 15 min:</strong> ${m15.toFixed(1)} mm
+          </div>
+          <div style="font-size: 12px; margin: 4px 0;">
+            <strong>Últimas 24h:</strong> ${parseFloat(props.data?.h24?.replace(',', '.') || 0).toFixed(1)} mm
+          </div>
+        </div>
+      `;
+      
+      marker.bindPopup(popup);
+      marker.addTo(map);
+    });
+  };
+
+  const addTransitoLayer = (map, L, data) => {
+    if (!data.alerts) return;
+
+    const jams = data.alerts.filter(a => a.type === 'JAM');
+    const accidents = data.alerts.filter(a => a.type === 'ACCIDENT');
+
+    // Adiciona congestionamentos
+    jams.forEach(jam => {
+      const coords = jam.location;
+      const color = '#f59e0b';
+      
+      const icon = L.divIcon({
+        html: `<div style="background-color: ${color}; width: 8px; height: 8px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.3);"></div>`,
+        className: '',
+        iconSize: [8, 8]
+      });
+
+      const marker = L.marker([coords.y, coords.x], { icon });
+      
+      const popup = `
+        <div style="font-family: system-ui; min-width: 180px;">
+          <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: bold; color: #1e293b;">
+            🚗 ${jam.street || 'Via não identificada'}
+          </h3>
+          <div style="font-size: 12px; color: #64748b;">
+            📍 ${jam.city || 'Rio de Janeiro'}
+          </div>
+          <div style="font-size: 12px; padding: 4px 8px; background: #f59e0b; color: white; border-radius: 4px; display: inline-block; margin-top: 4px;">
+            Congestionamento
+          </div>
+        </div>
+      `;
+      
+      marker.bindPopup(popup);
+      marker.addTo(map);
+    });
+
+    // Adiciona acidentes
+    accidents.forEach(acc => {
+      const coords = acc.location;
+      
+      const icon = L.divIcon({
+        html: `<div style="background-color: #dc2626; width: 8px; height: 8px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.3);"></div>`,
+        className: '',
+        iconSize: [8, 8]
+      });
+
+      const marker = L.marker([coords.y, coords.x], { icon });
+      
+      const popup = `
+        <div style="font-family: system-ui; min-width: 180px;">
+          <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: bold; color: #1e293b;">
+            💥 ${acc.street || 'Local não identificado'}
+          </h3>
+          <div style="font-size: 12px; color: #64748b;">
+            📍 ${acc.city || 'Rio de Janeiro'}
+          </div>
+          <div style="font-size: 12px; padding: 4px 8px; background: #dc2626; color: white; border-radius: 4px; display: inline-block; margin-top: 4px;">
+            Acidente
+          </div>
+        </div>
+      `;
+      
+      marker.bindPopup(popup);
+      marker.addTo(map);
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-[600px]">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-slate-300">Carregando mapa...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative">
+      {/* Estatísticas */}
+      <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className="bg-slate-800/50 border border-green-500/30 rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Radio className="w-5 h-5 text-green-400" />
+            <span className="text-slate-300 font-semibold">Sirenes</span>
+          </div>
+          <div className="text-2xl font-bold text-white">{stats.sirenes}</div>
+        </div>
+
+        <div className="bg-slate-800/50 border border-blue-500/30 rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Droplets className="w-5 h-5 text-blue-400" />
+            <span className="text-slate-300 font-semibold">Pluviômetros</span>
+          </div>
+          <div className="text-2xl font-bold text-white">{stats.pluviometros}</div>
+        </div>
+
+        <div className="bg-slate-800/50 border border-orange-500/30 rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Car className="w-5 h-5 text-orange-400" />
+            <span className="text-slate-300 font-semibold">Alertas</span>
+          </div>
+          <div className="text-2xl font-bold text-white">{stats.transito}</div>
+        </div>
+      </div>
+
+      {/* Legenda */}
+      <div className="bg-slate-800/50 border border-cyan-500/30 rounded-xl p-4 mb-4">
+        <div className="flex items-center gap-2 mb-3">
+          <Layers className="w-5 h-5 text-cyan-400" />
+          <span className="text-white font-semibold">Legenda</span>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+            <span className="text-slate-300">Sirene Online</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+            <span className="text-slate-300">Sirene Alerta</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+            <span className="text-slate-300">Chuva</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+            <span className="text-slate-300">Congestionamento</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Mapa */}
+      <div className="bg-slate-800/30 border border-cyan-500/30 rounded-2xl overflow-hidden">
+        <div 
+          ref={mapRef} 
+          style={{ height: '600px', width: '100%' }}
+          className="z-0"
+        ></div>
+      </div>
+    </div>
+  );
+};
+
+export default Map;

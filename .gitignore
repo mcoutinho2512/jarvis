@@ -1,0 +1,12 @@
+node_modules
+dist
+.env
+.DS_Store
+.vercel
+
+# Logs do sistema
+*.log
+logs-*.log
+backend.log
+frontend.log
+gateway.log
