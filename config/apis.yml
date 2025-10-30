@@ -1,0 +1,27 @@
+alerta_rio:
+  descricao: "Meteorologia / Clima e Previsão"
+  base_url: "https://www.sistema-alerta-rio.com.br"
+  auth:
+    type: "none"
+  endpoints:
+    previsao_estendida: "/upload/xml/PrevisaoEstendida.xml"
+    # você pode adicionar mais endpoints aqui depois (ex.: clima_agora, previsao_dia)
+  timeout_s: 10
+
+# Exemplos (placeholders) — preencha quando tiver as URLs reais
+transito:
+  descricao: "Trânsito / Engarrafamentos / Interdições"
+  base_url: "https://SEU-ENDERECO-INTERNO/transito"
+  auth: { type: "none" }
+  endpoints:
+    top: "/congestionamentos/top"
+    interditadas: "/vias/interditadas"
+  timeout_s: 5
+
+pluviometria:
+  descricao: "Pluviômetros / Acumulado"
+  base_url: "https://SEU-ENDERECO-INTERNO/pluviometros"
+  auth: { type: "none" }
+  endpoints:
+    top_24h: "/acumulado/top"
+  timeout_s: 5

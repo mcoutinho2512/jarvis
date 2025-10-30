@@ -1,0 +1,8 @@
+alerta_rio:
+  descricao: "Meteorologia / Clima e Previsão"
+  base_url: "https://www.sistema-alerta-rio.com.br"
+  auth:
+    type: "none"
+  endpoints:
+    previsao_estendida: "/upload/xml/PrevisaoEstendida.xml"
+  timeout_s: 10
