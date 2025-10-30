@@ -1,6 +1,7 @@
 import express from 'express';
 import fetch from 'node-fetch';
 import cors from 'cors';
+import axios from 'axios';  // ✅ CORRIGIDO: import ao invés de require
 import { parseString } from 'xml2js';
 import fs from 'fs';
 import Papa from 'papaparse';
@@ -154,12 +155,10 @@ app.get('/api/sirenes', async (req, res) => {
   }
 });
 
+// ✅ ROTA ÚNICA DE PLUVIOMETRIA
 app.get('/api/pluviometria', async (req, res) => {
-
-// Nova rota para o Dashboard de Pluviômetros (formato GeoJSON)
-app.get('/api/pluviometros', async (req, res) => {
   try {
-    console.log('☁️ Buscando dados de pluviômetros...');
+    console.log('☔ Buscando dados de pluviômetros...');
     const response = await fetch('https://websempre.rio.rj.gov.br/json/dados_pluviometricos');
     const data = await response.json();
     console.log(`✅ ${data.features?.length || 0} pluviômetros carregados`);
@@ -169,35 +168,49 @@ app.get('/api/pluviometros', async (req, res) => {
     res.status(500).json({ error: 'Erro ao buscar dados', features: [] });
   }
 });
-  try {
-    const response = await fetch('https://websempre.rio.rj.gov.br/json/dados_pluviometricos');
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: 'Erro ao buscar dados' });
-  }
-});
 
-// Nova rota para o Dashboard de Pluviômetros (formato GeoJSON)
+// ✅ ALIAS para Dashboard (mesmo endpoint)
 app.get('/api/pluviometros', async (req, res) => {
   try {
-    console.log('☁️ Buscando dados de pluviômetros...');
+    console.log('☔ Buscando dados de pluviômetros...');
     const response = await fetch('https://websempre.rio.rj.gov.br/json/dados_pluviometricos');
     const data = await response.json();
-    
-    // A API já retorna no formato GeoJSON correto
     console.log(`✅ ${data.features?.length || 0} pluviômetros carregados`);
     res.json(data);
   } catch (error) {
     console.error('❌ Erro ao buscar pluviômetros:', error.message);
+    res.status(500).json({ error: 'Erro ao buscar dados', features: [] });
+  }
+});
+
+// ✅ ROTA: Ocorrências Hexagon - CORRIGIDA
+app.get('/api/ocorrencias', async (req, res) => {
+  try {
+    console.log('📡 [API] Requisição de ocorrências recebida');
+    
+    // URL da API Django
+    const DJANGO_API_URL = 'http://localhost:9000/api/ocorrencias/';
+    
+    const response = await axios.get(DJANGO_API_URL, {
+      timeout: 10000,
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+    
+    console.log('✅ [OCORRÊNCIAS]', response.data.length, 'ocorrências obtidas');
+    res.json(response.data);
+    
+  } catch (error) {
+    console.error('❌ [OCORRÊNCIAS] Erro:', error.message);
     res.status(500).json({ 
-      error: 'Erro ao buscar dados',
-      features: [] // Retorna vazio em caso de erro
+      error: 'Erro ao buscar ocorrências',
+      details: error.message 
     });
   }
 });
 
-// ✅ NOVO - Rota para buscar limite municipal
+// ✅ Rota para buscar limite municipal
 app.get('/api/limite-municipal', async (req, res) => {
   try {
     console.log('🗺️ Buscando limite municipal...');
@@ -211,7 +224,7 @@ app.get('/api/limite-municipal', async (req, res) => {
   }
 });
 
-// ✅ NOVO - Rota para buscar bairros
+// ✅ Rota para buscar bairros
 app.get('/api/bairros', async (req, res) => {
   try {
     console.log('🏘️ Buscando bairros...');
@@ -225,7 +238,7 @@ app.get('/api/bairros', async (req, res) => {
   }
 });
 
-// ✅ NOVO - Rota para buscar sirenes do ArcGIS (alternativa)
+// ✅ Rota para buscar sirenes do ArcGIS (alternativa)
 app.get('/api/sirenes-arcgis', async (req, res) => {
   try {
     console.log('📡 Buscando sirenes do ArcGIS...');

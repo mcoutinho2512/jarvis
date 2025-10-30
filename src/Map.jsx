@@ -18,13 +18,15 @@ const Map = () => {
     transito: true,
     bairros: false,
     logradouros: false,
+    ocorrencias: false,
     radar: false
   });
   
   const [stats, setStats] = useState({
     sirenes: 0,
     pluviometros: 0,
-    transito: 0
+    transito: 0,
+    ocorrencias: 0
   });
   
   const layerGroupsRef = useRef({
@@ -32,7 +34,8 @@ const Map = () => {
     pluviometros: null,
     transito: null,
     bairros: null,
-    logradouros: null
+    logradouros: null,
+    ocorrencias: null
   });
 
   // Refs para limites do município do Rio
@@ -493,6 +496,21 @@ useEffect(() => {
       console.log('📊 [LOGRADOUROS]', logradouros.features?.length || 0, 'ruas recebidas');
       if (layers.logradouros) addLogradourosLayer(map, L, logradouros);
 
+      console.log('📡 [API] Buscando ocorrências Hexagon...');
+      const ocorrencias = await fetch('/api/ocorrencias')
+        .then(r => {
+          console.log('📡 [API] Ocorrências - Status:', r.status);
+          return r.json();
+        })
+        .catch(err => {
+          console.error('❌ [API] Erro ocorrências:', err);
+          return [];
+        });
+      
+      console.log('📊 [OCORRÊNCIAS]', ocorrencias.length || 0, 'ocorrências recebidas');
+      if (layers.ocorrencias) addOcorrenciasLayer(map, L, ocorrencias);
+      setStats(prev => ({ ...prev, ocorrencias: ocorrencias.length || 0 }));
+
     } catch (error) {
       console.error('❌ [API] Erro geral:', error);
     }
@@ -843,6 +861,198 @@ useEffect(() => {
     });
     
     console.log('✅ [LOGRADOUROS]', count, 'ruas adicionadas');
+  };
+
+  const addOcorrenciasLayer = (map, L, data) => {
+    console.log('🚨 [OCORRÊNCIAS] Adicionando', data.length || 0, 'ocorrências');
+    
+    if (layerGroupsRef.current.ocorrencias) {
+      layerGroupsRef.current.ocorrencias.clearLayers();
+    }
+    
+    const layerGroup = L.layerGroup().addTo(map);
+    layerGroupsRef.current.ocorrencias = layerGroup;
+    
+    // Mapeamento de palavras-chave para categorias
+    const getCategoria = (incidente) => {
+      const texto = incidente.toUpperCase();
+      
+      if (texto.includes('ACIDENTE') || texto.includes('ATROPELAMENTO') || 
+          texto.includes('ABALROAMENTO') || texto.includes('ENGUICO')) {
+        return 'acidentes';
+      }
+      if (texto.includes('INCENDIO') || texto.includes('INCÊNDIO')) {
+        return 'incendios';
+      }
+      if (texto.includes('AGUA') || texto.includes('ÁGUA') || texto.includes('ALAGAMENTO') || 
+          texto.includes('ENCHENTE') || texto.includes('INUNDACAO') || texto.includes('INUNDAÇÃO') ||
+          texto.includes('LAMINA') || texto.includes('VAZAMENTO') || texto.includes('RESSACA')) {
+        return 'agua';
+      }
+      if (texto.includes('QUEDA') || texto.includes('ARVORE') || texto.includes('ÁRVORE') ||
+          texto.includes('POSTE') || texto.includes('DESLIZAMENTO') || texto.includes('ESTRUTURA')) {
+        return 'quedas';
+      }
+      if (texto.includes('ANIMAL') || texto.includes('RESGATE')) {
+        return 'animais';
+      }
+      if (texto.includes('SINAIS') || texto.includes('ENERGIA') || texto.includes('APAGAO') ||
+          texto.includes('BURACO') || texto.includes('OBRA') || texto.includes('MANUTENCAO') ||
+          texto.includes('MANUTENÇÃO') || texto.includes('BUEIRO') || texto.includes('FIACAO') ||
+          texto.includes('FIAÇÃO')) {
+        return 'infraestrutura';
+      }
+      if (texto.includes('MANIFESTACAO') || texto.includes('MANIFESTAÇÃO') || 
+          texto.includes('REINTEGRACAO') || texto.includes('IMPLOSAO') || texto.includes('IMPLOSÃO') ||
+          texto.includes('GAS') || texto.includes('GÁS') || texto.includes('POLICIAL') ||
+          texto.includes('SIRENES') || texto.includes('AMBIENTAL')) {
+        return 'emergencias';
+      }
+      
+      return 'outros';
+    };
+    
+    // Ícones SVG por categoria
+    const iconSVG = {
+      acidentes: `<svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+        <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/>
+        <path d="M7 7l10 10M17 7L7 17" stroke="white" stroke-width="2"/>
+      </svg>`,
+      
+      incendios: `<svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+        <path d="M12 2c-1.5 4.5-6 5.5-6 10 0 3.3 2.7 6 6 6s6-2.7 6-6c0-4.5-4.5-5.5-6-10z"/>
+        <path d="M12 14c-.8 0-1.5-.7-1.5-1.5 0-1.5 1.5-2 1.5-3.5.5 1.5 1.5 2 1.5 3.5 0 .8-.7 1.5-1.5 1.5z" fill="#fbbf24"/>
+      </svg>`,
+      
+      agua: `<svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+        <path d="M12 18c-2.21 0-4-1.79-4-4 0-1.76 2-4 4-6 2 2 4 4.24 4 6 0 2.21-1.79 4-4 4z" fill="#06b6d4" opacity="0.7"/>
+      </svg>`,
+      
+      quedas: `<svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+        <path d="M12 2L2 12h4v8h12v-8h4L12 2z"/>
+        <line x1="8" y1="16" x2="16" y2="8" stroke="#ef4444" stroke-width="2.5"/>
+      </svg>`,
+      
+      animais: `<svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+        <circle cx="8" cy="8" r="2"/>
+        <circle cx="16" cy="8" r="2"/>
+        <circle cx="6" cy="14" r="2"/>
+        <circle cx="18" cy="14" r="2"/>
+        <circle cx="12" cy="18" r="3"/>
+      </svg>`,
+      
+      infraestrutura: `<svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+        <path d="M22 9L12 2 2 9v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9z"/>
+        <path d="M12 6v12M8 10h8M8 14h8" stroke="#1e293b" stroke-width="1.5"/>
+      </svg>`,
+      
+      emergencias: `<svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+        <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+      </svg>`,
+      
+      outros: `<svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12" stroke="#1e293b" stroke-width="2"/>
+        <circle cx="12" cy="16" r="1" fill="#1e293b"/>
+      </svg>`
+    };
+    
+    // Cores por prioridade
+    const corPrioridade = {
+      'MUITO ALTA': '#ef4444',
+      'ALTA': '#f97316',
+      'MÉDIA': '#eab308',
+      'BAIXA': '#22c55e'
+    };
+    
+    let count = 0;
+    
+    data.forEach(ocorrencia => {
+      const lat = parseFloat(ocorrencia.lat);
+      const lon = parseFloat(ocorrencia.lon);
+      
+      if (!lat || !lon || isNaN(lat) || isNaN(lon)) {
+        return;
+      }
+      
+      const categoria = getCategoria(ocorrencia.incidente || '');
+      const cor = corPrioridade[ocorrencia.prio] || '#64748b';
+      
+      const icon = L.divIcon({
+        html: `
+          <div style="
+            width: 36px;
+            height: 36px;
+            background: ${cor};
+            border: 3px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+          ">${iconSVG[categoria] || iconSVG['outros']}</div>
+        `,
+        className: '',
+        iconSize: [36, 36],
+        iconAnchor: [18, 18]
+      });
+      
+      const marker = L.marker([lat, lon], { icon }).addTo(layerGroup);
+      
+      marker.bindPopup(`
+        <div style="min-width: 250px; font-family: 'Inter', sans-serif;">
+          <div style="
+            font-weight: 600; 
+            color: ${cor}; 
+            margin-bottom: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          ">
+            <div style="
+              width: 28px;
+              height: 28px;
+              background: ${cor};
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border: 2px solid white;
+              flex-shrink: 0;
+            ">${iconSVG[categoria] || iconSVG['outros']}</div>
+            ${ocorrencia.incidente}
+          </div>
+          <div style="
+            padding: 8px;
+            background: ${cor}22;
+            border-left: 3px solid ${cor};
+            margin-bottom: 8px;
+            border-radius: 4px;
+          ">
+            <div style="font-weight: 600; color: ${cor};">
+              ${ocorrencia.prio}
+            </div>
+          </div>
+          <div style="font-size: 12px; color: #475569; line-height: 1.6;">
+            <div style="margin-bottom: 4px;">
+              <strong style="color: #1e293b;">📍 Local:</strong> ${ocorrencia.location || 'Não informado'}
+            </div>
+            <div style="margin-bottom: 4px;">
+              <strong style="color: #1e293b;">📋 Status:</strong> ${ocorrencia.status || 'Em andamento'}
+            </div>
+            <div>
+              <strong style="color: #1e293b;">🆔 ID:</strong> ${ocorrencia.id_c}
+            </div>
+          </div>
+        </div>
+      `);
+      
+      count++;
+    });
+    
+    console.log('✅ [OCORRÊNCIAS]', count, 'marcadores adicionados');
   };
 
   // Função helper para verificar se um ponto está dentro de um polígono (Ray Casting)
@@ -1288,6 +1498,12 @@ useEffect(() => {
             .then(data => addLogradourosLayer(mapInstanceRef.current, L, data))
             .catch(err => console.error('❌ [LOGRADOUROS] Erro:', err));
         }
+        else if (layerName === 'ocorrencias') {
+          fetch('/api/ocorrencias')
+            .then(r => r.json())
+            .then(data => addOcorrenciasLayer(mapInstanceRef.current, L, data))
+            .catch(err => console.error('❌ [OCORRÊNCIAS] Erro:', err));
+        }
       } else {
         console.log('➖ [LAYER] Desativando:', layerName);
         if (layerGroupsRef.current[layerName]) {
@@ -1543,6 +1759,35 @@ useEffect(() => {
                 <div style={{ flex: 1, textAlign: 'left' }}>
                   <div style={{ fontWeight: 500, fontSize: '14px' }}>Logradouros</div>
                   <div style={{ fontSize: '12px', opacity: 0.75 }}>Ruas da cidade</div>
+                </div>
+              </button>
+
+              <button
+                onClick={() => toggleLayer('ocorrencias')}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  border: layers.ocorrencias ? '1px solid #ef4444' : '1px solid rgba(71, 85, 105, 0.5)',
+                  backgroundColor: layers.ocorrencias ? 'rgba(239, 68, 68, 0.2)' : 'rgba(51, 65, 85, 0.3)',
+                  color: layers.ocorrencias ? '#fca5a5' : '#94a3b8',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  boxShadow: layers.ocorrencias ? '0 4px 20px rgba(239, 68, 68, 0.2)' : 'none',
+                  marginBottom: '8px'
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                  <line x1="12" y1="9" x2="12" y2="13"/>
+                  <circle cx="12" cy="17" r="0.5" fill="currentColor"/>
+                </svg>
+                <div style={{ flex: 1, textAlign: 'left' }}>
+                  <div style={{ fontWeight: 500, fontSize: '14px' }}>Ocorrências Hexagon</div>
+                  <div style={{ fontSize: '12px', opacity: 0.75 }}>{stats.ocorrencias} abertas</div>
                 </div>
               </button>
 
