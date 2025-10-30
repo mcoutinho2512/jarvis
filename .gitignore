@@ -10,3 +10,7 @@ logs-*.log
 backend.log
 frontend.log
 gateway.log
+
+# Logs do sistema
+*.log
+logs-*.log
