@@ -1,16 +1,14 @@
-node_modules
-dist
-.env
+node_modules/
 .DS_Store
-.vercel
-
-# Logs do sistema
+.env
+.env.local
 *.log
-logs-*.log
-backend.log
-frontend.log
-gateway.log
-
-# Logs do sistema
-*.log
-logs-*.log
+.vscode/
+.idea/
+*.backup
+*.backup.*
+*.BEFORE_*
+*.antes-*
+*.before-*
+/build
+/dist
