@@ -1,443 +1,730 @@
 import React, { useState, useEffect } from 'react';
 
 const Relatorio = ({ onClose }) => {
-  const [periodo, setPeriodo] = useState(30);
   const [dados, setDados] = useState({
     sirenes: [],
     ocorrencias: [],
-    pluviometros: [],
-    waze: [],
-    bairros: []
+    chuvas: { data: [] },
+    waze: { alerts: [] },
+    previsao: null
   });
-  const [ranking, setRanking] = useState([]);
+  const [periodo, setPeriodo] = useState('1h');
   const [loading, setLoading] = useState(true);
-  const [ultimaAtualizacao, setUltimaAtualizacao] = useState(new Date());
 
   useEffect(() => {
-    carregarDados();
-    const interval = setInterval(() => {
-      carregarDados();
-    }, 30000);
+    buscarDados();
+    const interval = setInterval(buscarDados, 60000);
     return () => clearInterval(interval);
   }, [periodo]);
 
-  const carregarDados = async () => {
-    setLoading(true);
+  const buscarDados = async () => {
     try {
-      const [sirenes, ocorrencias, pluvio, wazeData, bairros] = await Promise.all([
-        fetch('/api/sirenes').then(r => r.json()),
-        fetch('/api/ocorrencias').then(r => r.json()),
-        fetch('/api/pluviometria').then(r => r.json()),
-        fetch('/api/waze/filtrado').then(r => r.json()),
-        fetch('/api/bairros').then(r => r.json())
+      const [sirenes, ocorrencias, chuvas, waze, previsao] = await Promise.all([
+        fetch('/api/sirenes').then(r => r.json()).catch(() => []),
+        fetch('/api/ocorrencias').then(r => r.json()).catch(() => []),
+        fetch('/api/chuvas').then(r => r.json()).catch(() => ({ data: [] })),
+        fetch('/api/waze/filtrado').then(r => r.json()).catch(() => ({ alerts: [] })),
+        fetch('/api/previsao').then(r => r.json()).catch(() => null)
       ]);
-
-      const pluvioArray = Array.isArray(pluvio) ? pluvio : (pluvio?.features || []);
-      const wazeArray = Array.isArray(wazeData) ? wazeData : (wazeData?.alerts || []);
-      const bairrosArray = Array.isArray(bairros) ? bairros : (bairros?.features || []);
-
-      setDados({
-        sirenes: sirenes || [],
-        ocorrencias: ocorrencias || [],
-        pluviometros: pluvioArray,
-        waze: wazeArray,
-        bairros: bairrosArray
-      });
-
-      calcularRanking(sirenes || [], ocorrencias || [], pluvioArray, wazeArray, bairrosArray);
-      setUltimaAtualizacao(new Date());
+      
+      setDados({ sirenes, ocorrencias, chuvas, waze, previsao });
+      setLoading(false);
     } catch (error) {
-      console.error('Erro ao carregar dados:', error);
-    } finally {
+      console.error('Erro ao buscar dados:', error);
       setLoading(false);
     }
   };
 
-  const calcularRanking = (sirenes, ocorrencias, pluvio, waze, bairros) => {
-    const pontuacaoBairros = {};
-    bairros.forEach(b => {
-      const props = b.properties || b;
-      const nome = props?.nome || props?.NOME || props?.name;
-      if (nome) {
-        pontuacaoBairros[nome] = { nome, sirenes: 0, ocorrencias: 0, chuva: 0, transito: 0, total: 0 };
-      }
-    });
-
-    if (Array.isArray(sirenes)) {
-      sirenes.filter(s => s.status === 'acionada' || s.active).forEach(sirene => {
-        const bairro = sirene.bairro || sirene.neighborhood;
-        if (bairro && pontuacaoBairros[bairro]) pontuacaoBairros[bairro].sirenes += 10;
-      });
-    }
-
-    if (Array.isArray(ocorrencias)) {
-      ocorrencias.forEach(oc => {
-        const location = (oc.location || '').toUpperCase();
-        Object.keys(pontuacaoBairros).forEach(bairro => {
-          if (location.includes(bairro.toUpperCase())) pontuacaoBairros[bairro].ocorrencias += 5;
-        });
-      });
-    }
-
-    if (Array.isArray(pluvio)) {
-      pluvio.forEach(p => {
-        const props = p.properties || p;
-        const chuva = parseFloat(props.chuva_15min || props.precipitacao || 0);
-        if (chuva > 0) {
-          const estacao = (props.estacao || props.nome || '').toUpperCase();
-          Object.keys(pontuacaoBairros).forEach(bairro => {
-            if (estacao.includes(bairro.toUpperCase())) pontuacaoBairros[bairro].chuva += Math.min(chuva, 10);
-          });
-        }
-      });
-    }
-
-    if (Array.isArray(waze)) {
-      waze.forEach(w => {
-        const location = (w.location || w.street || '').toUpperCase();
-        Object.keys(pontuacaoBairros).forEach(bairro => {
-          if (location.includes(bairro.toUpperCase())) pontuacaoBairros[bairro].transito += 3;
-        });
-      });
-    }
-
-    const rankingArray = Object.values(pontuacaoBairros)
-      .map(b => ({ ...b, total: b.sirenes + b.ocorrencias + b.chuva + b.transito }))
-      .filter(b => b.total > 0)
-      .sort((a, b) => b.total - a.total)
-      .slice(0, 10);
-
-    setRanking(rankingArray);
+  const gerarPDF = () => {
+    // Gerar data/hora para nome do arquivo
+    const agora = new Date();
+    const dataHora = agora.toISOString()
+      .replace(/[:.]/g, '-')
+      .replace('T', '_')
+      .slice(0, 19);
+    const nomeArquivo = `JARVIS_Relatorio_Intemperies_${dataHora}.pdf`;
+    
+    window.print();
   };
 
-  const sirenasAcionadas = dados.sirenes.filter(s => s.status === 'acionada' || s.active).length;
-  const estacoesComChuva = dados.pluviometros.filter(p => {
-    const props = p.properties || p;
-    return parseFloat(props.chuva_15min || props.precipitacao || 0) > 0;
-  }).length;
+  const imprimirRelatorio = () => {
+    const agora = new Date();
+    const dataHora = agora.toLocaleString('pt-BR').replace(/[\/,:]/g, '-');
+    
+    const conteudoImpressao = document.getElementById('relatorio-conteudo').innerHTML;
+    
+    const janelaImpressao = window.open('', '_blank');
+    janelaImpressao.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>JARVIS - Relatório de Intempéries - ${dataHora}</title>
+        <style>
+          @page { 
+            margin: 1.5cm;
+            size: A4;
+          }
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: white;
+            color: #1e293b;
+          }
+          .header-relatorio {
+            background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+          }
+          .header-relatorio h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+          }
+          .header-relatorio h2 {
+            font-size: 18px;
+            opacity: 0.9;
+          }
+          .info-linha {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+          }
+          .info-item {
+            font-size: 14px;
+          }
+          .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+          }
+          .card-stat {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px solid #06b6d4;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+          }
+          .card-stat-numero {
+            font-size: 48px;
+            font-weight: bold;
+            color: #0891b2;
+            margin-bottom: 8px;
+          }
+          .card-stat-label {
+            font-size: 14px;
+            color: #334155;
+            font-weight: 600;
+          }
+          .secao {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+          }
+          .secao-titulo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0891b2;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+          }
+          th {
+            background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+          }
+          td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 11px;
+          }
+          tr:nth-child(even) {
+            background: #f8fafc;
+          }
+          .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 4px solid #06b6d4;
+          }
+          .ranking-numero {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0891b2;
+            margin-right: 15px;
+            min-width: 30px;
+          }
+          .ranking-info {
+            flex: 1;
+          }
+          .ranking-valor {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+          }
+          .footer-relatorio {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 2px solid #e2e8f0;
+            color: #64748b;
+            font-size: 12px;
+          }
+          .alerta-critico {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+          }
+          .alerta-critico strong {
+            color: #dc2626;
+          }
+        </style>
+      </head>
+      <body>
+        ${conteudoImpressao}
+      </body>
+      </html>
+    `);
+    
+    janelaImpressao.document.close();
+    setTimeout(() => {
+      janelaImpressao.print();
+    }, 500);
+  };
 
-  if (loading && !dados.sirenes.length) {
-    return (
-      <div style={{ padding: '100px', textAlign: 'center', backgroundColor: 'white' }}>
-        <div style={{
-          width: '60px',
-          height: '60px',
-          border: '5px solid #3b82f6',
-          borderTopColor: 'transparent',
-          borderRadius: '50%',
-          animation: 'spin 1s linear infinite',
-          margin: '0 auto 20px'
-        }}></div>
-        <p style={{ fontSize: '18px', color: '#666' }}>Carregando relatório...</p>
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-      </div>
-    );
-  }
+  // Calcular estatísticas
+  const sirenes AcionadasArray = dados.sirenes.filter(s => s.tocando === true);
+  const sirenesTocando = sirenesTocandoArray.length;
+  const estacoesComChuva = dados.chuvas.data?.filter(e => (e.chuva_1h || 0) > 0).length || 0;
+  const alertasTransito = dados.waze.alerts?.length || 0;
+  const ocorrenciasAtivas = dados.ocorrencias?.length || 0;
+
+  // Calcular ranking de bairros
+  const rankingBairros = {};
+  
+  // Processar chuvas
+  dados.chuvas.data?.forEach(estacao => {
+    if (estacao && estacao.nome) {
+      const bairro = estacao.nome;
+      if (!rankingBairros[bairro]) {
+        rankingBairros[bairro] = { sirenes: 0, ocorrencias: 0, chuva: 0, transito: 0, score: 0 };
+      }
+      const chuva = parseFloat(estacao.chuva_1h) || 0;
+      rankingBairros[bairro].chuva = chuva;
+      rankingBairros[bairro].score += chuva * 2;
+    }
+  });
+
+  // Processar ocorrências
+  dados.ocorrencias?.forEach(oc => {
+    if (oc && oc.bairro) {
+      const bairro = oc.bairro;
+      if (!rankingBairros[bairro]) {
+        rankingBairros[bairro] = { sirenes: 0, ocorrencias: 0, chuva: 0, transito: 0, score: 0 };
+      }
+      rankingBairros[bairro].ocorrencias += 1;
+      rankingBairros[bairro].score += 5;
+    }
+  });
+
+  // Processar sirenes
+  sirenesTocandoArray.forEach(sirene => {
+    if (sirene && sirene.bairro) {
+      const bairro = sirene.bairro;
+      if (!rankingBairros[bairro]) {
+        rankingBairros[bairro] = { sirenes: 0, ocorrencias: 0, chuva: 0, transito: 0, score: 0 };
+      }
+      rankingBairros[bairro].sirenes += 1;
+      rankingBairros[bairro].score += 10;
+    }
+  });
+
+  const top10Bairros = Object.entries(rankingBairros)
+    .filter(([_, dados]) => dados.score > 0)
+    .sort((a, b) => b[1].score - a[1].score)
+    .slice(0, 10);
 
   return (
-    <>
-      <style>{`
-        body { margin: 0; padding: 0; overflow-y: auto !important; }
-        * { box-sizing: border-box; }
-        @media print { button { display: none !important; } }
-      `}</style>
-
-      <div style={{ backgroundColor: 'white', padding: '0', margin: '0' }}>
-        {/* Header */}
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: 'rgba(0, 0, 0, 0.8)',
+      zIndex: 2000,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: '20px'
+    }}>
+      <div style={{
+        background: '#0f172a',
+        borderRadius: '16px',
+        maxWidth: '1400px',
+        width: '100%',
+        maxHeight: '90vh',
+        display: 'flex',
+        flexDirection: 'column',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+        border: '2px solid #06b6d4'
+      }}>
+        {/* HEADER DO MODAL */}
         <div style={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
-          padding: '30px 20px'
+          background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)',
+          padding: '24px 32px',
+          borderTopLeftRadius: '14px',
+          borderTopRightRadius: '14px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          borderBottom: '3px solid #0891b2'
         }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '20px' }}>
-              <div>
-                <h1 style={{ margin: '0 0 10px 0', fontSize: '32px', fontWeight: 'bold' }}>
-                  📊 RELATÓRIO DE INTEMPÉRIES
-                </h1>
-                <p style={{ margin: 0, fontSize: '16px', opacity: 0.95 }}>
-                  Sistema JARVIS Municipal Rio - Defesa Civil
-                </p>
-              </div>
-              <button
-                onClick={onClose}
-                style={{
-                  background: 'rgba(255,255,255,0.2)',
-                  border: '2px solid white',
-                  color: 'white',
-                  fontSize: '24px',
-                  cursor: 'pointer',
-                  borderRadius: '50%',
-                  width: '40px',
-                  height: '40px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                ✕
-              </button>
-            </div>
+          <div>
+            <h2 style={{
+              margin: 0,
+              color: 'white',
+              fontSize: '28px',
+              fontWeight: 'bold',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px'
+            }}>
+              ⚡ RELATÓRIO DE INTEMPÉRIES
+            </h2>
+            <p style={{
+              margin: '6px 0 0 0',
+              color: 'rgba(255, 255, 255, 0.9)',
+              fontSize: '14px'
+            }}>
+              Centro de Operações Rio • Sistema JARVIS Municipal
+            </p>
+          </div>
+          
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <button
+              onClick={imprimirRelatorio}
+              style={{
+                padding: '10px 20px',
+                background: 'rgba(255, 255, 255, 0.2)',
+                color: 'white',
+                border: '2px solid white',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: '600',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              🖨️ Imprimir/PDF
+            </button>
+            
+            <button
+              onClick={onClose}
+              style={{
+                width: '40px',
+                height: '40px',
+                background: 'rgba(255, 255, 255, 0.2)',
+                color: 'white',
+                border: '2px solid white',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '20px',
+                fontWeight: 'bold',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              ✕
+            </button>
+          </div>
+        </div>
 
-            <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '20px' }}>
+        {/* CONTEÚDO COM SCROLL */}
+        <div id="relatorio-conteudo" style={{
+          flex: 1,
+          overflowY: 'auto',
+          padding: '32px',
+          background: '#0f172a'
+        }}>
+          {/* HEADER PARA IMPRESSÃO */}
+          <div className="header-relatorio" style={{
+            background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)',
+            color: 'white',
+            padding: '30px',
+            borderRadius: '12px',
+            marginBottom: '30px'
+          }}>
+            <h1 style={{ margin: 0, fontSize: '32px' }}>⚡ INTEMPÉRIES</h1>
+            <h2 style={{ margin: '8px 0 0 0', fontSize: '18px', opacity: 0.9 }}>
+              Relatório Operacional
+            </h2>
+            <div className="info-linha" style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginTop: '20px',
+              paddingTop: '20px',
+              borderTop: '1px solid rgba(255,255,255,0.3)',
+              fontSize: '14px'
+            }}>
               <div>
                 <strong>Emissão:</strong> {new Date().toLocaleString('pt-BR')}
               </div>
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                <strong>Período:</strong>
-                <select
-                  value={periodo}
-                  onChange={(e) => setPeriodo(Number(e.target.value))}
-                  style={{
-                    padding: '5px 10px',
-                    borderRadius: '5px',
-                    border: '1px solid white',
-                    backgroundColor: 'rgba(255,255,255,0.2)',
-                    color: 'white',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  <option value={30}>Últimos 30 min</option>
-                  <option value={60}>Última 1 hora</option>
-                  <option value={120}>Últimas 2 horas</option>
-                </select>
+              <div>
+                <strong>Período:</strong> Última(s) {periodo === '30min' ? '30 minutos' : periodo === '1h' ? '1 hora' : '2 horas'}
               </div>
-              <div style={{ marginLeft: 'auto', fontSize: '14px' }}>
-                ⏱️ Atualizado: {ultimaAtualizacao.toLocaleTimeString('pt-BR')}
+              <div>
+                <strong>Atualizado:</strong> {new Date().toLocaleTimeString('pt-BR')}
               </div>
-            </div>
-
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-              <button
-                onClick={() => window.print()}
-                style={{
-                  backgroundColor: 'white',
-                  color: '#667eea',
-                  border: 'none',
-                  padding: '10px 20px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontWeight: 'bold',
-                  fontSize: '14px'
-                }}
-              >
-                🖨️ Imprimir
-              </button>
-              <button
-                onClick={() => window.print()}
-                style={{
-                  backgroundColor: 'white',
-                  color: '#667eea',
-                  border: 'none',
-                  padding: '10px 20px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontWeight: 'bold',
-                  fontSize: '14px'
-                }}
-              >
-                📥 Baixar PDF
-              </button>
-              <button
-                onClick={carregarDados}
-                style={{
-                  backgroundColor: '#10b981',
-                  color: 'white',
-                  border: 'none',
-                  padding: '10px 20px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontWeight: 'bold',
-                  fontSize: '14px'
-                }}
-              >
-                🔄 Atualizar
-              </button>
             </div>
           </div>
-        </div>
 
-        {/* Content */}
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '30px 20px 100px' }}>
-          {/* Cards */}
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+          {/* CARDS DE ESTATÍSTICAS */}
+          <div className="cards-grid" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
             gap: '20px',
-            marginBottom: '40px'
+            marginBottom: '30px'
           }}>
-            <div style={{ 
-              background: 'linear-gradient(135deg, #fecaca 0%, #dc2626 100%)',
-              padding: '25px',
+            <div className="card-stat" style={{
+              background: 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)',
+              border: '2px solid #ef4444',
               borderRadius: '12px',
-              color: 'white',
-              boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+              padding: '24px',
+              textAlign: 'center'
             }}>
-              <div style={{ fontSize: '48px', fontWeight: 'bold', marginBottom: '5px' }}>{sirenasAcionadas}</div>
-              <div style={{ fontSize: '14px', fontWeight: '600' }}>Sirenes Acionadas</div>
+              <div className="card-stat-numero" style={{
+                fontSize: '56px',
+                fontWeight: 'bold',
+                color: sirenesTocando > 0 ? '#dc2626' : '#10b981',
+                marginBottom: '8px'
+              }}>
+                {sirenesTocando}
+              </div>
+              <div className="card-stat-label" style={{
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#334155'
+              }}>
+                🚨 Sirenes Acionadas
+              </div>
             </div>
-            <div style={{ 
-              background: 'linear-gradient(135deg, #fdba74 0%, #ea580c 100%)',
-              padding: '25px',
+
+            <div className="card-stat" style={{
+              background: 'linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)',
+              border: '2px solid #f97316',
               borderRadius: '12px',
-              color: 'white',
-              boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+              padding: '24px',
+              textAlign: 'center'
             }}>
-              <div style={{ fontSize: '48px', fontWeight: 'bold', marginBottom: '5px' }}>{dados.ocorrencias.length}</div>
-              <div style={{ fontSize: '14px', fontWeight: '600' }}>Ocorrências Ativas</div>
+              <div className="card-stat-numero" style={{
+                fontSize: '56px',
+                fontWeight: 'bold',
+                color: '#ea580c',
+                marginBottom: '8px'
+              }}>
+                {ocorrenciasAtivas}
+              </div>
+              <div className="card-stat-label" style={{
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#334155'
+              }}>
+                🔔 Ocorrências Ativas
+              </div>
             </div>
-            <div style={{ 
-              background: 'linear-gradient(135deg, #93c5fd 0%, #2563eb 100%)',
-              padding: '25px',
+
+            <div className="card-stat" style={{
+              background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+              border: '2px solid #06b6d4',
               borderRadius: '12px',
-              color: 'white',
-              boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+              padding: '24px',
+              textAlign: 'center'
             }}>
-              <div style={{ fontSize: '48px', fontWeight: 'bold', marginBottom: '5px' }}>{estacoesComChuva}</div>
-              <div style={{ fontSize: '14px', fontWeight: '600' }}>Estações com Chuva</div>
+              <div className="card-stat-numero" style={{
+                fontSize: '56px',
+                fontWeight: 'bold',
+                color: '#0891b2',
+                marginBottom: '8px'
+              }}>
+                {estacoesComChuva}
+              </div>
+              <div className="card-stat-label" style={{
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#334155'
+              }}>
+                💧 Estações com Chuva
+              </div>
             </div>
-            <div style={{ 
-              background: 'linear-gradient(135deg, #fde047 0%, #ca8a04 100%)',
-              padding: '25px',
+
+            <div className="card-stat" style={{
+              background: 'linear-gradient(135deg, #fef9c3 0%, #fef08a 100%)',
+              border: '2px solid #eab308',
               borderRadius: '12px',
-              color: 'white',
-              boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+              padding: '24px',
+              textAlign: 'center'
             }}>
-              <div style={{ fontSize: '48px', fontWeight: 'bold', marginBottom: '5px' }}>{dados.waze.length}</div>
-              <div style={{ fontSize: '14px', fontWeight: '600' }}>Alertas de Trânsito</div>
+              <div className="card-stat-numero" style={{
+                fontSize: '56px',
+                fontWeight: 'bold',
+                color: '#ca8a04',
+                marginBottom: '8px'
+              }}>
+                {alertasTransito}
+              </div>
+              <div className="card-stat-label" style={{
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#334155'
+              }}>
+                🚗 Alertas de Trânsito
+              </div>
             </div>
           </div>
 
-          {/* Ranking */}
-          <div style={{ marginBottom: '40px' }}>
-            <h2 style={{ 
-              fontSize: '28px', 
+          {/* ALERTA CRÍTICO SE HOUVER SIRENES */}
+          {sirenesTocando > 0 && (
+            <div className="alerta-critico" style={{
+              background: '#fef2f2',
+              borderLeft: '4px solid #ef4444',
+              padding: '20px',
+              marginBottom: '30px',
+              borderRadius: '8px'
+            }}>
+              <div style={{ fontSize: '24px', marginBottom: '8px' }}>⚠️ <strong style={{ color: '#dc2626' }}>ALERTA CRÍTICO</strong></div>
+              <div style={{ fontSize: '14px', color: '#991b1b' }}>
+                Há {sirenesTocando} sirene(s) acionada(s) no momento. Verificar imediatamente as áreas afetadas.
+              </div>
+            </div>
+          )}
+
+          {/* RANKING DE BAIRROS */}
+          <div className="secao" style={{
+            background: '#1e293b',
+            border: '2px solid #334155',
+            borderRadius: '12px',
+            padding: '24px',
+            marginBottom: '20px'
+          }}>
+            <div className="secao-titulo" style={{
+              fontSize: '22px',
               fontWeight: 'bold',
-              color: '#1f2937',
+              color: '#06b6d4',
               marginBottom: '20px',
-              paddingBottom: '10px',
-              borderBottom: '3px solid #667eea'
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px'
             }}>
               🏆 RANKING DE BAIRROS MAIS AFETADOS
-            </h2>
-            
-            <table style={{ 
-              width: '100%',
-              borderCollapse: 'collapse',
-              backgroundColor: 'white',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-              borderRadius: '8px',
-              overflow: 'hidden'
-            }}>
-              <thead>
-                <tr style={{ backgroundColor: '#f9fafb' }}>
-                  <th style={{ padding: '15px', textAlign: 'left', fontWeight: 'bold', borderBottom: '2px solid #e5e7eb' }}>Pos</th>
-                  <th style={{ padding: '15px', textAlign: 'left', fontWeight: 'bold', borderBottom: '2px solid #e5e7eb' }}>Bairro</th>
-                  <th style={{ padding: '15px', textAlign: 'center', fontWeight: 'bold', borderBottom: '2px solid #e5e7eb' }}>🚨 Sirenes</th>
-                  <th style={{ padding: '15px', textAlign: 'center', fontWeight: 'bold', borderBottom: '2px solid #e5e7eb' }}>🚨 Ocorrências</th>
-                  <th style={{ padding: '15px', textAlign: 'center', fontWeight: 'bold', borderBottom: '2px solid #e5e7eb' }}>💧 Chuva</th>
-                  <th style={{ padding: '15px', textAlign: 'center', fontWeight: 'bold', borderBottom: '2px solid #e5e7eb' }}>🚗 Trânsito</th>
-                  <th style={{ padding: '15px', textAlign: 'center', fontWeight: 'bold', borderBottom: '2px solid #e5e7eb' }}>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ranking.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} style={{ padding: '50px', textAlign: 'center', color: '#6b7280', fontSize: '16px' }}>
-                      ✅ Nenhum bairro significativamente afetado no momento
-                    </td>
-                  </tr>
-                ) : (
-                  ranking.map((b, i) => (
-                    <tr key={b.nome} style={{ 
-                      backgroundColor: i < 3 ? '#fef2f2' : 'white',
-                      borderBottom: '1px solid #e5e7eb'
+            </div>
+
+            {top10Bairros.length > 0 ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {top10Bairros.map(([bairro, dados], index) => {
+                  const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}°`;
+                  return (
+                    <div key={bairro} className="ranking-item" style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: '16px',
+                      background: '#334155',
+                      borderRadius: '8px',
+                      borderLeft: `4px solid ${index < 3 ? '#06b6d4' : '#475569'}`
                     }}>
-                      <td style={{ padding: '15px', textAlign: 'center', fontSize: '20px', fontWeight: 'bold' }}>
-                        {i === 0 && '🥇'}{i === 1 && '🥈'}{i === 2 && '🥉'}{i > 2 && `${i + 1}º`}
+                      <div className="ranking-numero" style={{
+                        fontSize: '24px',
+                        fontWeight: 'bold',
+                        color: '#06b6d4',
+                        marginRight: '20px',
+                        minWidth: '50px'
+                      }}>
+                        {medal}
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div className="ranking-valor" style={{
+                          fontSize: '18px',
+                          fontWeight: '600',
+                          color: 'white',
+                          marginBottom: '8px'
+                        }}>
+                          {bairro}
+                        </div>
+                        <div style={{ display: 'flex', gap: '16px', fontSize: '13px', color: '#94a3b8' }}>
+                          {dados.sirenes > 0 && <span>🚨 {dados.sirenes} sirene(s)</span>}
+                          {dados.ocorrencias > 0 && <span>🔔 {dados.ocorrencias} ocorrência(s)</span>}
+                          {dados.chuva > 0 && <span>💧 {dados.chuva.toFixed(1)}mm</span>}
+                        </div>
+                      </div>
+                      <div style={{
+                        fontSize: '20px',
+                        fontWeight: 'bold',
+                        color: '#06b6d4',
+                        padding: '8px 16px',
+                        background: 'rgba(6, 182, 212, 0.1)',
+                        borderRadius: '8px'
+                      }}>
+                        {dados.score.toFixed(0)}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div style={{
+                textAlign: 'center',
+                padding: '40px',
+                color: '#94a3b8',
+                fontSize: '16px'
+              }}>
+                ✅ Nenhum bairro significativamente afetado no momento
+              </div>
+            )}
+          </div>
+
+          {/* OCORRÊNCIAS ATIVAS */}
+          {ocorrenciasAtivas > 0 && (
+            <div className="secao" style={{
+              background: '#1e293b',
+              border: '2px solid #334155',
+              borderRadius: '12px',
+              padding: '24px',
+              marginBottom: '20px'
+            }}>
+              <div className="secao-titulo" style={{
+                fontSize: '22px',
+                fontWeight: 'bold',
+                color: '#f97316',
+                marginBottom: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px'
+              }}>
+                🚨 OCORRÊNCIAS ATIVAS ({ocorrenciasAtivas})
+              </div>
+
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr>
+                    <th style={{
+                      background: 'linear-gradient(135deg, #f97316 0%, #fb923c 100%)',
+                      color: 'white',
+                      padding: '12px',
+                      textAlign: 'left',
+                      fontSize: '13px'
+                    }}>Tipo</th>
+                    <th style={{
+                      background: 'linear-gradient(135deg, #f97316 0%, #fb923c 100%)',
+                      color: 'white',
+                      padding: '12px',
+                      textAlign: 'left',
+                      fontSize: '13px'
+                    }}>Local</th>
+                    <th style={{
+                      background: 'linear-gradient(135deg, #f97316 0%, #fb923c 100%)',
+                      color: 'white',
+                      padding: '12px',
+                      textAlign: 'left',
+                      fontSize: '13px'
+                    }}>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dados.ocorrencias.slice(0, 15).map((oc, i) => (
+                    <tr key={i}>
+                      <td style={{
+                        padding: '12px',
+                        borderBottom: '1px solid #334155',
+                        color: '#e2e8f0',
+                        fontSize: '13px'
+                      }}>
+                        {oc.tipo || 'N/D'}
                       </td>
-                      <td style={{ padding: '15px', fontWeight: '600' }}>{b.nome}</td>
-                      <td style={{ padding: '15px', textAlign: 'center' }}>{b.sirenes}</td>
-                      <td style={{ padding: '15px', textAlign: 'center' }}>{b.ocorrencias}</td>
-                      <td style={{ padding: '15px', textAlign: 'center' }}>{b.chuva.toFixed(1)}</td>
-                      <td style={{ padding: '15px', textAlign: 'center' }}>{b.transito}</td>
-                      <td style={{ padding: '15px', textAlign: 'center', fontWeight: 'bold', color: '#dc2626', fontSize: '18px' }}>
-                        {b.total.toFixed(0)}
+                      <td style={{
+                        padding: '12px',
+                        borderBottom: '1px solid #334155',
+                        color: '#e2e8f0',
+                        fontSize: '13px'
+                      }}>
+                        {oc.local || oc.endereco || oc.bairro || 'N/D'}
+                      </td>
+                      <td style={{
+                        padding: '12px',
+                        borderBottom: '1px solid #334155',
+                        color: '#e2e8f0',
+                        fontSize: '13px'
+                      }}>
+                        {oc.status || 'Em andamento'}
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Detalhes */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px', marginBottom: '40px' }}>
-            <div style={{ 
-              border: '2px solid #e5e7eb',
-              borderRadius: '12px',
-              padding: '25px',
-              backgroundColor: 'white',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-            }}>
-              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#dc2626', marginBottom: '15px' }}>
-                🚨 Sirenes Acionadas
-              </h3>
-              {sirenasAcionadas === 0 ? (
-                <p style={{ color: '#6b7280' }}>Nenhuma sirene acionada</p>
-              ) : (
-                <ul style={{ fontSize: '14px', lineHeight: '2', paddingLeft: '20px', margin: 0 }}>
-                  {dados.sirenes.filter(s => s.status === 'acionada' || s.active).map((s, i) => (
-                    <li key={i}>{s.nome || s.name} - {s.bairro || s.neighborhood}</li>
                   ))}
-                </ul>
+                </tbody>
+              </table>
+
+              {ocorrenciasAtivas > 15 && (
+                <div style={{
+                  textAlign: 'center',
+                  marginTop: '15px',
+                  color: '#94a3b8',
+                  fontSize: '13px'
+                }}>
+                  ... e mais {ocorrenciasAtivas - 15} ocorrência(s)
+                </div>
               )}
             </div>
+          )}
 
-            <div style={{ 
-              border: '2px solid #e5e7eb',
-              borderRadius: '12px',
-              padding: '25px',
-              backgroundColor: 'white',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-            }}>
-              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#ea580c', marginBottom: '15px' }}>
-                🚨 Ocorrências Hexagon
-              </h3>
-              {dados.ocorrencias.length === 0 ? (
-                <p style={{ color: '#6b7280' }}>Nenhuma ocorrência ativa</p>
-              ) : (
-                <ul style={{ fontSize: '14px', lineHeight: '2', paddingLeft: '20px', margin: 0 }}>
-                  {dados.ocorrencias.slice(0, 10).map((oc, i) => (
-                    <li key={i}>{oc.incidente} - {oc.prio}</li>
-                  ))}
-                  {dados.ocorrencias.length > 10 && (
-                    <li style={{ color: '#6b7280', fontStyle: 'italic' }}>
-                      ... e mais {dados.ocorrencias.length - 10} ocorrências
-                    </li>
-                  )}
-                </ul>
-              )}
-            </div>
-          </div>
-
-          {/* Rodapé */}
-          <div style={{ 
+          {/* FOOTER */}
+          <div className="footer-relatorio" style={{
             textAlign: 'center',
-            padding: '30px 0',
-            borderTop: '2px solid #e5e7eb',
-            color: '#6b7280'
+            marginTop: '40px',
+            paddingTop: '20px',
+            borderTop: '2px solid #334155',
+            color: '#94a3b8',
+            fontSize: '13px'
           }}>
-            <p style={{ margin: '0 0 5px 0', fontWeight: 'bold', fontSize: '16px' }}>
-              Sistema JARVIS Municipal Rio - Defesa Civil
-            </p>
-            <p style={{ margin: 0, fontSize: '14px' }}>
+            <div style={{ marginBottom: '8px', fontWeight: '600' }}>
+              Sistema JARVIS Municipal Rio • Centro de Operações Rio
+            </div>
+            <div>
               Dados atualizados em tempo real • Relatório gerado automaticamente
-            </p>
+            </div>
+            <div style={{ marginTop: '8px', fontSize: '11px' }}>
+              Documento restrito. A utilização, cópia e divulgação não autorizada é expressamente proibida.
+            </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
