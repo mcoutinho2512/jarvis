@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Radio, Droplets, Car, AlertCircle, Layers, X, Menu } from 'lucide-react';
+import Relatorio from "./components/Relatorio";
 
 const Map = () => {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const [painelAberto, setPainelAberto] = useState(true);
+  const [mostrarRelatorio, setMostrarRelatorio] = useState(false);
   
   // Constantes de layout
   const SIDEBAR_WIDTH = 380;
@@ -1573,7 +1575,8 @@ useEffect(() => {
           width: `${SIDEBAR_WIDTH}px`,
           height: '100%',
           overflowY: 'auto',
-          overflowX: 'hidden'
+          overflowX: 'hidden',
+          paddingBottom: '300px'
         }}>
           <div style={{
             padding: '20px',
@@ -2162,6 +2165,11 @@ useEffect(() => {
         >
           <Menu size={20} />
         </button>
+      )}
+
+
+      {mostrarRelatorio && (
+        <Relatorio onClose={() => setMostrarRelatorio(false)} />
       )}
 
       {/* CONTAINER DO MAPA */}
